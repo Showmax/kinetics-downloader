@@ -31,6 +31,10 @@ python list_classes.py
 ```
 
 **Download specific categories**:
+
+Categories are defined as described in **[1]**. However, 14 classes are not present
+in any category, therefore, I added them under the category "custom".
+
 ```
 python download.py --categories 'arts and crafts' cooking
 ```
@@ -64,3 +68,7 @@ underscores (e.g. blowing glass => blowing_glass).
 * download test set
 * make sure videos that are not download in the mp4 format are correctly converted
 * enable video format selection
+
+#### References
+
+[[1] The Kinetics Human Action Video Dataset - W.Kay et al. (2017)](https://arxiv.org/abs/1705.06950)
