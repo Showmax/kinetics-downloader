@@ -1,9 +1,13 @@
 import argparse, json, os
 
 import lib.config as config
-import lib.downloader as downloader
+import lib.parallel as parallel
 
 def maybe_create_dirs():
+  """
+  Create directories for training, validation and testing videos if they do not exist.
+  :return:    None.
+  """
   for path in [config.TRAIN_ROOT, config.VALID_ROOT, config.TEST_ROOT]:
     if not os.path.exists(path):
       try:
@@ -11,7 +15,15 @@ def maybe_create_dirs():
       except FileExistsError:
         pass
 
-def download_category(category, compress):
+def download_category(category, num_workers, failed_save_file, compress):
+  """
+  Download all videos that belong to the given category.
+  :param category:              The category to download.
+  :param num_workers:           Number of downloads in parallel.
+  :param failed_save_file:      Where to save failed video ids.
+  :param compress:              Decides if the videos should be compressed.
+  :return:
+  """
 
   with open(config.CATEGORIES_PATH, "r") as file:
     categories = json.load(file)
@@ -19,57 +31,47 @@ def download_category(category, compress):
   if category not in categories:
     raise ValueError("Category {} not found.".format(category))
 
-  labels = categories[category]
+  classes = categories[category]
+  download_classes(classes, num_workers, failed_save_file, compress)
 
-  failed_videos = []
-  for label in labels:
-    failed_videos += download_class(label, compress)
+def download_classes(classes, num_workers, failed_save_file, compress):
+  """
+  Download all videos of the provided classes.
+  :param classes:               List of classes to download.
+  :param num_workers:           Number of downloads in parallel.
+  :param failed_save_file:      Where to save failed video ids.
+  :param compress:              Decides if the videos should be compressed.
+  :return:                      None.
+  """
 
-  return failed_videos
+  for list_path, save_root in zip([config.KINETICS_TRAIN_PATH, config.KINETICS_VAL_PATH],
+                                        [config.TRAIN_ROOT, config.VALID_ROOT]):
+    with open(list_path) as file:
+      data = json.load(file)
 
-def download_class(class_name, compress):
-
-  with open(config.KINETICS_TRAIN_PATH) as file:
-    train_data = json.load(file)
-
-  with open(config.KINETICS_VAL_PATH) as file:
-    valid_data = json.load(file)
-
-  failed_videos = []
-
-  failed_videos += downloader.download_class(class_name, train_data, config.TRAIN_ROOT, compress=compress)
-  failed_videos += downloader.download_class(class_name, valid_data, config.VALID_ROOT, compress=compress)
-
-  return failed_videos
+    pool = parallel.Pool(classes, data, save_root, num_workers, failed_save_file, compress)
+    pool.start_workers()
+    pool.feed_videos()
+    pool.stop_workers()
 
 def main(args):
 
   maybe_create_dirs()
 
-  failed_videos = []
-
   if args.all:
-
     with open(config.CATEGORIES_PATH, "r") as file:
       categories = json.load(file)
 
     for category in categories:
-      failed_videos += download_category(category, args.compress)
+      download_category(category, args.num_workers, args.failed_log, args.compress)
 
   else:
     if args.categories:
       for category in args.categories:
-        failed_videos += download_category(category, args.compress)
+        download_category(category, args.num_workers, args.failed_log, args.compress)
 
     if args.classes:
-      for class_name in args.classes:
-        failed_videos += download_class(class_name, args.compress)
-
-  if len(failed_videos) > 0:
-    print("Failed videos (in any stage of processing):")
-
-    for video in failed_videos:
-      print(video)
+      download_classes(args.classes, args.num_workers, args.failed_log, args.compress)
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()
@@ -78,9 +80,8 @@ if __name__ == "__main__":
   parser.add_argument("--classes", nargs="+", help="classes to download")
   parser.add_argument("--all", action="store_true", help="download the whole dataset")
 
-  # TODO
-  #parser.add_argument("--disable-separate", default=False, help="do not create a separate directory for each class;"
-  #                                                              " e.g. dataset/train/swimming")
+  parser.add_argument("--num-workers", type=int, default=1)
+  parser.add_argument("--failed-log", default="dataset/failed.txt", help="where to save list of failed videos")
   parser.add_argument("--compress", default=False, action="store_true", help="compress videos using gzip")
 
   parsed = parser.parse_args()

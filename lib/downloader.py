@@ -13,7 +13,7 @@ def download_video(video_id, directory, video_format="mp4"):
 
   return_code = subprocess.call(["youtube-dl", "https://youtube.com/watch?v={}".format(video_id),
                    "--quiet", "-f", "bestvideo[ext={}]+bestaudio/best".format(video_format),
-                   "--output", download_path])
+                   "--output", download_path, "--no-continue"], stderr=subprocess.DEVNULL)
   success = return_code == 0
 
   return download_path, success
@@ -76,9 +76,9 @@ def process_video(video_id, directory, start, end, compress=False):
 
   return True
 
-def download_class(class_name, videos_dict, directory, compress=False):
+def download_class_sequential(class_name, videos_dict, directory, compress=False):
   """
-  Download all videos with the given label.
+  Download all videos with the given label sequentially.
   :param class_name:      The label.
   :param videos_dict:     Dataset metadata.
   :param directory:       Directory where to save the videos.
@@ -108,3 +108,32 @@ def download_class(class_name, videos_dict, directory, compress=False):
         failed_videos.append(key)
 
   return failed_videos
+
+def download_class_parallel(class_name, videos_dict, directory, videos_queue):
+  """
+  Download all videos of the given class in parallel.
+  :param class_name:        Name of the class.
+  :param videos_dict:       Dictionary of all videos.
+  :param directory:         Where to save the videos.
+  :param videos_queue:      Videos queue for parallel download.
+  :return:                  None.
+  """
+
+  class_dir = os.path.join(directory, class_name.replace(" ", "_"))
+
+  if not os.path.isdir(class_dir):
+    # when using multiple processes, the folder might have been already created (after the if was evaluated)
+    try:
+      os.mkdir(class_dir)
+    except FileExistsError:
+      pass
+
+  for key in videos_dict.keys():
+    metadata = videos_dict[key]
+    annotations = metadata["annotations"]
+
+    if annotations["label"].lower() == class_name.lower():
+      start = annotations["segment"][0]
+      end = annotations["segment"][1]
+
+      videos_queue.put((key, class_dir, start, end))
