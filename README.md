@@ -32,8 +32,10 @@ python list_classes.py
 
 **Download specific categories**:
 
-Categories are defined as described in **[1]**. However, 14 classes are not present
-in any category, therefore, I added them under the category "custom".
+Categories are defined as described in **[1]**. However, 14 classes were not present
+in any category, therefore, I added them under the category "custom". Moreover, some
+classes were present in more than one category. As a temporary fix, I pruned the categories
+so that each class is present in only one category.
 
 ```
 python download.py --categories 'arts and crafts' cooking
