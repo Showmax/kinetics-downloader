@@ -1,6 +1,6 @@
 import os, subprocess
 
-def download_video(video_id, directory, video_format="mp4"):
+def download_video(video_id, download_path, video_format="mp4"):
   """
   Download video from YouTube.
   :param video_id:        YouTube ID of the video.
@@ -9,16 +9,14 @@ def download_video(video_id, directory, video_format="mp4"):
   :return:                Tuple: path to the downloaded video and a bool indicating success.
   """
 
-  download_path = "{}_raw.{}".format(os.path.join(directory, video_id), video_format)
-
   return_code = subprocess.call(["youtube-dl", "https://youtube.com/watch?v={}".format(video_id),
                    "--quiet", "-f", "bestvideo[ext={}]+bestaudio/best".format(video_format),
                    "--output", download_path, "--no-continue"], stderr=subprocess.DEVNULL)
   success = return_code == 0
 
-  return download_path, success
+  return success
 
-def cut_video(raw_video_path, video_id, directory, start, end, video_format="mp4"):
+def cut_video(raw_video_path, slice_path, start, end):
   """
   Cut out the section of interest from a video.
   :param raw_video_path:    Path to the whole video.
@@ -29,13 +27,12 @@ def cut_video(raw_video_path, video_id, directory, start, end, video_format="mp4
   :param video_format:      Format of the output video.
   :return:                  Tuple: Path to the video slice and a bool indicating success.
   """
-  slice_path = "{}.{}".format(os.path.join(directory, video_id), video_format)
 
   return_code = subprocess.call(["ffmpeg", "-loglevel", "quiet", "-i", raw_video_path, "-strict", "-2",
                                  "-ss", str(start), "-to", str(end), slice_path])
   success = return_code == 0
 
-  return slice_path, success
+  return success
 
 def compress_video(video_path):
   """
@@ -45,7 +42,7 @@ def compress_video(video_path):
   """
   return subprocess.call(["gzip", video_path]) == 0
 
-def process_video(video_id, directory, start, end, compress=False):
+def process_video(video_id, directory, start, end, video_format="mp4", compress=False, overwrite=False):
   """
   Process one video for the kinetics dataset.
   :param video_id:        YouTube ID of the video.
@@ -56,13 +53,27 @@ def process_video(video_id, directory, start, end, compress=False):
   :return:                Bool indicating success.
   """
 
+  download_path = "{}_raw.{}".format(os.path.join(directory, video_id), video_format)
+  slice_path = "{}.{}".format(os.path.join(directory, video_id), video_format)
+
+  # simply delete residual downloaded videos
+  if os.path.isfile(download_path):
+    os.remove(download_path)
+
+  # if slices video already exists, decide what to do next
+  if os.path.isfile(slice_path):
+    if overwrite:
+      os.remove(slice_path)
+    else:
+      return True
+
   # download video and cut out the section of interest
-  download_path, success = download_video(video_id, directory)
+  success = download_video(video_id, download_path)
 
   if not success:
     return False
 
-  slice_path, success = cut_video(download_path, video_id, directory, start, end)
+  success = cut_video(download_path, slice_path, start, end)
 
   if not success:
     return False
