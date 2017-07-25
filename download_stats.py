@@ -102,19 +102,23 @@ def main(args):
   if test_present > 0:
     test_percent_found = (test_present * 100) / (test_present + test_missing)
 
-  print("{:d} / {:d} classes found".format(num_found, total))
-  print("{:d} / {:d} ({:.2f}%) train videos found".format(
+  print("class stats:")
+  print("\t{:d} / {:d} classes found".format(num_found, total))
+
+  print()
+
+  print("video stats (only for found classes):")
+  print("\t{:d} / {:d} ({:.2f}%) train videos found".format(
     total_train_present, total_train_present + total_train_missing, train_percent_found))
-  print("{:d} / {:d} ({:.2f}%) valid videos found".format(
+  print("\t{:d} / {:d} ({:.2f}%) valid videos found".format(
     total_val_present, total_val_present + total_val_missing, valid_percent_found))
-  print("{:d} / {:d} ({:.2f}%) test videos found".format(
+  print("\t{:d} / {:d} ({:.2f}%) test videos found".format(
     test_present, test_present + test_missing, test_percent_found))
 
 if __name__ == "__main__":
-  parser = argparse.ArgumentParser()
+  parser = argparse.ArgumentParser("Print statistics about downloaded videos.")
 
-  parser.add_argument("--classes", nargs="+")
-  parser.add_argument("-d", "--details", action="store_true", default=False)
+  parser.add_argument("-d", "--details", action="store_true", default=False, help="detailed stats for each found class")
 
   parsed = parser.parse_args()
   main(parsed)
