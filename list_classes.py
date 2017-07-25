@@ -2,14 +2,8 @@ import json
 
 import lib.config as config
 
-with open(config.CATEGORIES_PATH, "r") as file:
-  categories = json.load(file)
+with open(config.CLASSES_PATH, "r") as file:
+  classes = json.load(file)
 
-classes = set()
-
-for key in categories.keys():
-  for label in categories[key]:
-    classes.add(label)
-
-for label in sorted(list(classes)):
-  print(label)
+for cls in classes:
+  print(cls)

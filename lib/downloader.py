@@ -54,6 +54,7 @@ def process_video(video_id, directory, start, end, video_format="mp4", compress=
   """
 
   download_path = "{}_raw.{}".format(os.path.join(directory, video_id), video_format)
+  mkv_download_path = "{}_raw.mkv".format(os.path.join(directory, video_id))
   slice_path = "{}.{}".format(os.path.join(directory, video_id), video_format)
 
   # simply delete residual downloaded videos
@@ -67,11 +68,16 @@ def process_video(video_id, directory, start, end, video_format="mp4", compress=
     else:
       return True
 
-  # download video and cut out the section of interest
-  success = download_video(video_id, download_path)
+  # sometimes videos are downloaded as mkv
+  if not os.path.isfile(mkv_download_path):
+    # download video and cut out the section of interest
+    success = download_video(video_id, download_path)
 
-  if not success:
-    return False
+    if not success:
+      return False
+
+  if not os.path.isfile(download_path) and os.path.isfile(mkv_download_path):
+    download_path = mkv_download_path
 
   success = cut_video(download_path, slice_path, start, end)
 

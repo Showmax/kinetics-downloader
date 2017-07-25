@@ -75,3 +75,17 @@ class TestCategories(unittest.TestCase):
 
     for class_list in [not_in_train, not_in_valid]:
       self.assertTrue(len(class_list) == 0)
+
+  def test_categories_do_not_overlap(self):
+
+    with open(config.CATEGORIES_PATH, "r") as file:
+      categories = json.load(file)
+
+    classes = set()
+
+    for key in categories.keys():
+      for cls in categories[key]:
+        if cls in classes:
+          print("{} from {} duplicate".format(cls, key))
+        else:
+          classes.add(cls)
