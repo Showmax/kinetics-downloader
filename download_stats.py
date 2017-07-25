@@ -52,6 +52,7 @@ def main(args):
   total_val_present = 0
   total_val_missing = 0
 
+  # count train and validation videos
   for cls in classes:
     cls_train_path = os.path.join(config.TRAIN_ROOT, cls)
     cls_valid_path = os.path.join(config.VALID_ROOT, cls)
@@ -74,24 +75,40 @@ def main(args):
     if train_found or valid_found:
       num_found += 1
 
-      print("class {}".format(cls))
+      if args.details:
+        print("class {}".format(cls))
 
-      if train_found:
-        print("train: {} / {}".format(train_present, train_present + train_missing))
+        if train_found:
+          print("train: {} / {}".format(train_present, train_present + train_missing))
 
-      if valid_found:
-        print("valid: {} / {}".format(valid_present, valid_present + valid_missing))
+        if valid_found:
+          print("valid: {} / {}".format(valid_present, valid_present + valid_missing))
 
-      print()
+        print()
 
-  print("Overall:")
-  print("\t{:d} / {:d} classes found".format(num_found, total))
-  print("\t{:d} / {:d} ({:.2f}%) train videos found".format(
-    total_train_present, total_train_present + total_train_missing,
-    total_train_present / (total_train_present + total_train_missing)))
-  print("\t{:d} / {:d} ({:.2f}%) valid videos found".format(
-    total_val_present, total_val_present + total_val_missing,
-    total_val_present / (total_val_present + total_val_missing)))
+  # count test videos
+  test_present, test_missing = count_present_and_missing(None, config.TEST_ROOT, test_metadata)
+
+  # print
+  train_percent_found = 0
+  if total_train_present > 0:
+    train_percent_found = (total_train_present * 100) / (total_train_present + total_train_missing)
+
+  valid_percent_found = 0
+  if total_val_present > 0:
+    valid_percent_found = (total_val_present * 100) / (total_val_present + total_val_missing)
+
+  test_percent_found = 0
+  if test_present > 0:
+    test_percent_found = (test_present * 100) / (test_present + test_missing)
+
+  print("{:d} / {:d} classes found".format(num_found, total))
+  print("{:d} / {:d} ({:.2f}%) train videos found".format(
+    total_train_present, total_train_present + total_train_missing, train_percent_found))
+  print("{:d} / {:d} ({:.2f}%) valid videos found".format(
+    total_val_present, total_val_present + total_val_missing, valid_percent_found))
+  print("{:d} / {:d} ({:.2f}%) test videos found".format(
+    test_present, test_present + test_missing, test_percent_found))
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()
