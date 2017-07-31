@@ -1,7 +1,7 @@
 import argparse, json, os
 
 import lib.config as config
-import lib.parallel as parallel
+import lib.parallel_download as parallel
 
 def maybe_create_dirs():
   """
