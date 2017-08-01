@@ -1,4 +1,4 @@
-import os
+import os, subprocess
 from multiprocessing import Process, Queue
 
 import lib.video as video
@@ -85,6 +85,9 @@ def video_worker(videos_queue, failed_queue):
       break
 
     video_id, video_path, target_dir = request
+
+    if os.path.isdir(target_dir):
+      continue
 
     os.makedirs(target_dir)
 
