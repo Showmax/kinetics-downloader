@@ -34,13 +34,13 @@ class Pool:
         except FileExistsError:
           pass
 
-        videos = os.listdir(source_class_dir)
+      videos = os.listdir(source_class_dir)
 
-        for filename in videos:
-          video_path = os.path.join(source_class_dir, filename)
-          video_id = ".".join(filename.split(".")[:-1])
-          target_dir_path = os.path.join(target_class_dir, video_id)
-          self.videos_queue.put((video_id, video_path, target_dir_path))
+      for filename in videos:
+        video_path = os.path.join(source_class_dir, filename)
+        video_id = ".".join(filename.split(".")[:-1])
+        target_dir_path = os.path.join(target_class_dir, video_id)
+        self.videos_queue.put((video_id, video_path, target_dir_path))
 
   def start_workers(self):
     """
