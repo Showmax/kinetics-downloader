@@ -73,11 +73,18 @@ def main(args):
     if args.classes:
       download_classes(args.classes, args.num_workers, args.failed_log, args.compress)
 
+    if args.json_classes:
+      with open(args.json_classes, "r") as file:
+        classes = json.load(file)
+
+      download_classes(classes, args.num_workers, args.failed_log, args.compress)
+
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()
 
   parser.add_argument("--categories", nargs="+", help="categories to download")
   parser.add_argument("--classes", nargs="+", help="classes to download")
+  parser.add_argument("--json-classes", help="path to a JSON file with a list of classes")
   parser.add_argument("--all", action="store_true", help="download the whole dataset")
 
   parser.add_argument("--num-workers", type=int, default=1)
