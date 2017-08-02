@@ -61,7 +61,7 @@ def process_video(video_id, directory, start, end, video_format="mp4", compress=
   if os.path.isfile(download_path):
     os.remove(download_path)
 
-  # if slices video already exists, decide what to do next
+  # if sliced video already exists, decide what to do next
   if os.path.isfile(slice_path):
     if overwrite:
       os.remove(slice_path)
@@ -76,6 +76,7 @@ def process_video(video_id, directory, start, end, video_format="mp4", compress=
     if not success:
       return False
 
+  # video was downloaded as mkv instead of mp4
   if not os.path.isfile(download_path) and os.path.isfile(mkv_download_path):
     download_path = mkv_download_path
 

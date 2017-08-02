@@ -1,4 +1,4 @@
-import cv2, time, os
+import cv2, os
 
 def video_to_jpgs(video_path, save_path, do_resize=True, shorter_side=256):
 
