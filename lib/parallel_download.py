@@ -7,7 +7,7 @@ class Pool:
   A pool of video downloaders.
   """
 
-  def __init__(self, classes, videos_dict, directory, num_workers, failed_save_file, compress):
+  def __init__(self, classes, videos_dict, directory, num_workers, failed_save_file, compress, verbose):
     """
     :param classes:               List of classes to download.
     :param videos_dict:           Dictionary of all videos.
@@ -22,12 +22,19 @@ class Pool:
     self.num_workers = num_workers
     self.failed_save_file = failed_save_file
     self.compress = compress
+    self.verbose = verbose
 
     self.videos_queue = Queue(100)
     self.failed_queue = Queue(100)
 
     self.workers = []
     self.failed_save_worker = None
+
+    if verbose:
+      print("downloading:")
+      for cls in self.classes:
+        print(cls)
+      print()
 
   def feed_videos(self):
     """
@@ -36,6 +43,12 @@ class Pool:
     """
     for class_name in self.classes:
       downloader.download_class_parallel(class_name, self.videos_dict, self.directory, self.videos_queue)
+
+      if self.verbose:
+        print(class_name)
+
+    if self.verbose:
+      print("done")
 
   def start_workers(self):
     """

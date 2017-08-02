@@ -15,7 +15,7 @@ def maybe_create_dirs():
       except FileExistsError:
         pass
 
-def download_category(category, num_workers, failed_save_file, compress):
+def download_category(category, num_workers, failed_save_file, compress, verbose):
   """
   Download all videos that belong to the given category.
   :param category:              The category to download.
@@ -32,9 +32,9 @@ def download_category(category, num_workers, failed_save_file, compress):
     raise ValueError("Category {} not found.".format(category))
 
   classes = categories[category]
-  download_classes(classes, num_workers, failed_save_file, compress)
+  download_classes(classes, num_workers, failed_save_file, compress, verbose)
 
-def download_classes(classes, num_workers, failed_save_file, compress):
+def download_classes(classes, num_workers, failed_save_file, compress, verbose):
   """
   Download all videos of the provided classes.
   :param classes:               List of classes to download.
@@ -49,7 +49,7 @@ def download_classes(classes, num_workers, failed_save_file, compress):
     with open(list_path) as file:
       data = json.load(file)
 
-    pool = parallel.Pool(classes, data, save_root, num_workers, failed_save_file, compress)
+    pool = parallel.Pool(classes, data, save_root, num_workers, failed_save_file, compress, verbose)
     pool.start_workers()
     pool.feed_videos()
     pool.stop_workers()
@@ -63,21 +63,21 @@ def main(args):
       categories = json.load(file)
 
     for category in categories:
-      download_category(category, args.num_workers, args.failed_log, args.compress)
+      download_category(category, args.num_workers, args.failed_log, args.compress, args.varbose)
 
   else:
     if args.categories:
       for category in args.categories:
-        download_category(category, args.num_workers, args.failed_log, args.compress)
+        download_category(category, args.num_workers, args.failed_log, args.compress, args.varbose)
 
     if args.classes:
-      download_classes(args.classes, args.num_workers, args.failed_log, args.compress)
+      download_classes(args.classes, args.num_workers, args.failed_log, args.compress, args.varbose)
 
     if args.json_classes:
       with open(args.json_classes, "r") as file:
         classes = json.load(file)
 
-      download_classes(classes, args.num_workers, args.failed_log, args.compress)
+      download_classes(classes, args.num_workers, args.failed_log, args.compress, args.verbose)
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()
@@ -91,6 +91,7 @@ if __name__ == "__main__":
   parser.add_argument("--failed-log", default="dataset/failed.txt", help="where to save list of failed videos")
   parser.add_argument("--compress", default=False, action="store_true", help="compress videos using gzip")
   parser.add_argument("--overwrite", default=False, action="store_true", help="overwrite downloaded videos")
+  parser.add_argument("-v", "--verbose", default=False, action="store_true", help="print additional info")
 
   parsed = parser.parse_args()
   main(parsed)
