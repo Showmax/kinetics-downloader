@@ -1,6 +1,7 @@
-import argparse, json, os
+import argparse, os
 
 import lib.config as config
+import lib.utils as utils
 
 def count_present_and_missing(cls, directory, metadata):
   """
@@ -23,25 +24,16 @@ def count_present_and_missing(cls, directory, metadata):
 
   return present, missing
 
-def load_json(path):
-  """
-  Load a JSON file.
-  :param path:    Path to the file.
-  :return:        The loaded JSON file.
-  """
-
-  with open(path, "r") as file:
-    return json.load(file)
 
 def main(args):
 
   # load video classes
-  classes = load_json(config.CLASSES_PATH)
+  classes = utils.load_json(config.CLASSES_PATH)
 
   # load lists of videos
-  train_metadata = load_json(config.TRAIN_METADATA_PATH)
-  val_metadata = load_json(config.VAL_METADATA_PATH)
-  test_metadata = load_json(config.TEST_METADATA_PATH)
+  train_metadata = utils.load_json(config.TRAIN_METADATA_PATH)
+  val_metadata = utils.load_json(config.VAL_METADATA_PATH)
+  test_metadata = utils.load_json(config.TEST_METADATA_PATH)
 
   num_found = 0
   total = 0
@@ -55,7 +47,7 @@ def main(args):
   # load subset
   subset = None
   if args.subset:
-    subset = load_json(args.subset)
+    subset = utils.load_json(args.subset)
 
   # count train and validation videos
   for cls in classes:
