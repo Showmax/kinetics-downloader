@@ -44,7 +44,7 @@ def main(args):
   test_metadata = load_json(config.TEST_METADATA_PATH)
 
   num_found = 0
-  total = len(classes)
+  total = 0
 
   total_train_present = 0
   total_train_missing = 0
@@ -52,10 +52,21 @@ def main(args):
   total_val_present = 0
   total_val_missing = 0
 
+  # load subset
+  subset = None
+  if args.subset:
+    subset = load_json(args.subset)
+
   # count train and validation videos
   for cls in classes:
-    cls_train_path = os.path.join(config.TRAIN_ROOT, cls)
-    cls_valid_path = os.path.join(config.VALID_ROOT, cls)
+
+    if subset is not None and cls not in subset:
+      continue
+
+    total += 1
+
+    cls_train_path = os.path.join(config.TRAIN_ROOT, cls.replace(" ", "_"))
+    cls_valid_path = os.path.join(config.VALID_ROOT, cls.replace(" ", "_"))
 
     train_found = False
     valid_found = False
@@ -119,6 +130,7 @@ if __name__ == "__main__":
   parser = argparse.ArgumentParser("Print statistics about downloaded videos.")
 
   parser.add_argument("-d", "--details", action="store_true", default=False, help="detailed stats for each found class")
+  parser.add_argument("-s", "--subset", help="path to a JSON file containing a subset of Kinetics classes")
 
   parsed = parser.parse_args()
   main(parsed)
