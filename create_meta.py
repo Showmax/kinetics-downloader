@@ -14,14 +14,14 @@ def get_valid_videos(videos, root, classes):
 
   valid_videos = {}
 
-  for video_id in videos.key():
+  for video_id in videos.keys():
     cls = videos[video_id]["annotations"]["label"]
     if cls in classes:
       cls_path = cls.replace(" ", "_")
       video_path = os.path.join(root, cls_path, video_id)
 
       if os.path.isdir(video_path):
-        valid_videos["id"] = cls
+        valid_videos[video_id] = cls
 
   return valid_videos
 
@@ -32,7 +32,8 @@ def main(args):
   videos = utils.load_json(config.TRAIN_METADATA_PATH)
 
   valid_videos = get_valid_videos(videos, config.TRAIN_FRAMES_ROOT, classes)
-  valid_video_ids = random.shuffle(valid_videos.keys())
+  valid_video_ids = list(valid_videos.keys())
+  random.shuffle(valid_video_ids)
 
   # split training videos into train and valid datasets
   count = len(valid_videos.keys())
