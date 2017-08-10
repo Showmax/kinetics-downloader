@@ -63,15 +63,15 @@ def main(args):
       categories = json.load(file)
 
     for category in categories:
-      download_category(category, args.num_workers, args.failed_log, args.compress, args.varbose)
+      download_category(category, args.num_workers, args.failed_log, args.compress, args.verbose)
 
   else:
     if args.categories:
       for category in args.categories:
-        download_category(category, args.num_workers, args.failed_log, args.compress, args.varbose)
+        download_category(category, args.num_workers, args.failed_log, args.compress, args.verbose)
 
     if args.classes:
-      download_classes(args.classes, args.num_workers, args.failed_log, args.compress, args.varbose)
+      download_classes(args.classes, args.num_workers, args.failed_log, args.compress, args.verbose)
 
     if args.json_classes:
       with open(args.json_classes, "r") as file:
