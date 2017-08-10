@@ -1,3 +1,4 @@
+import os
 from multiprocessing import Process, Queue
 
 import lib.downloader as downloader
@@ -7,7 +8,7 @@ class Pool:
   A pool of video downloaders.
   """
 
-  def __init__(self, classes, videos_dict, directory, num_workers, failed_save_file, compress, verbose):
+  def __init__(self, classes, videos_dict, directory, num_workers, failed_save_file, compress, verbose, skip):
     """
     :param classes:               List of classes to download.
     :param videos_dict:           Dictionary of all videos.
@@ -23,6 +24,7 @@ class Pool:
     self.failed_save_file = failed_save_file
     self.compress = compress
     self.verbose = verbose
+    self.skip = skip
 
     self.videos_queue = Queue(100)
     self.failed_queue = Queue(100)
@@ -42,10 +44,14 @@ class Pool:
     :return:    None.
     """
     for class_name in self.classes:
-      downloader.download_class_parallel(class_name, self.videos_dict, self.directory, self.videos_queue)
 
       if self.verbose:
         print(class_name)
+
+      class_path = os.path.join(self.directory, class_name.replace(" ", "_"))
+
+      if not self.skip or not os.path.isdir(class_path):
+        downloader.download_class_parallel(class_name, self.videos_dict, self.directory, self.videos_queue)
 
     if self.verbose:
       print("done")
