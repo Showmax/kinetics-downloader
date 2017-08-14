@@ -38,7 +38,7 @@ def split_videos(videos, val_split):
   valid_videos = {}
 
   for cls, vids in videos.items():
-    vids = random.shuffle(vids)
+    random.shuffle(vids)
     count = len(vids)
     val_count = int(round(count * val_split))
     train_count = count - val_count
@@ -81,13 +81,14 @@ def main(args):
 
   # create datasets
   datasets = {}
-  classes = random.shuffle(train_videos.keys())
+  classes = list(train_videos.keys())
+  random.shuffle(classes)
 
   for num_classes in args.sets:
     set_classes = classes[:num_classes]
-    set_train = {cls: videos for cls, videos in train_videos if cls in set_classes}
-    set_valid = {cls: videos for cls, videos in valid_videos if cls in set_classes}
-    set_test = {cls: videos for cls, videos in test_videos if cls in set_classes}
+    set_train = {cls: videos for cls, videos in train_videos.items() if cls in set_classes}
+    set_valid = {cls: videos for cls, videos in valid_videos.items() if cls in set_classes}
+    set_test = {cls: videos for cls, videos in test_videos.items() if cls in set_classes}
 
     set_train = class_keys_to_video_id_keys(set_train)
     set_valid = class_keys_to_video_id_keys(set_valid)
@@ -117,7 +118,7 @@ parser = argparse.ArgumentParser("Create a train and validation split of specifi
 parser.add_argument("meta_path", help="path to a JSON metadata file containing a list of videos")
 
 parser.add_argument("-s", "--sets", type=int, nargs="+", default=[400, 200, 100, 50, 2])
-parser.add_argument("-v", "--val-split", type=float, default=0.1)
+parser.add_argument("-v", "--val-split", type=float, default=0.05)
 parser.add_argument("--save", default="resources/kinetics", help="save path")
 
 parsed = parser.parse_args()
