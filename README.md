@@ -2,8 +2,6 @@
 
 Download all videos from DeepMind's [Kinetics dataset](https://deepmind.com/research/open-source/open-source-datasets/kinetics/).
 
-Work in progress ...
-
 #### Requirements
 
 * Python >= 3.4
@@ -66,8 +64,6 @@ underscores (e.g. blowing glass => blowing_glass).
 #### TODO
 
 * download test set
-* make sure videos that are not download in the mp4 format are correctly converted
-* enable video format selection
 
 #### References
 

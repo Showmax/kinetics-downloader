@@ -137,7 +137,10 @@ def download_class_parallel(class_name, videos_dict, directory, videos_queue):
   :return:                  None.
   """
 
-  class_dir = os.path.join(directory, class_name.replace(" ", "_"))
+  if class_name is None:
+    class_dir = directory
+  else:
+    class_dir = os.path.join(directory, class_name.replace(" ", "_"))
 
   if not os.path.isdir(class_dir):
     # when using multiple processes, the folder might have been already created (after the if was evaluated)
@@ -150,7 +153,7 @@ def download_class_parallel(class_name, videos_dict, directory, videos_queue):
     metadata = videos_dict[key]
     annotations = metadata["annotations"]
 
-    if annotations["label"].lower() == class_name.lower():
+    if class_name is None or annotations["label"].lower() == class_name.lower():
       start = annotations["segment"][0]
       end = annotations["segment"][1]
 

@@ -43,18 +43,22 @@ class Pool:
     Feed video ids into the download queue.
     :return:    None.
     """
-    for class_name in self.classes:
+
+    if self.classes is None:
+      downloader.download_class_parallel(None, self.videos_dict, self.directory, self.videos_queue)
+    else:
+      for class_name in self.classes:
+
+        if self.verbose:
+          print(class_name)
+
+        class_path = os.path.join(self.directory, class_name.replace(" ", "_"))
+
+        if not self.skip or not os.path.isdir(class_path):
+          downloader.download_class_parallel(class_name, self.videos_dict, self.directory, self.videos_queue)
 
       if self.verbose:
-        print(class_name)
-
-      class_path = os.path.join(self.directory, class_name.replace(" ", "_"))
-
-      if not self.skip or not os.path.isdir(class_path):
-        downloader.download_class_parallel(class_name, self.videos_dict, self.directory, self.videos_queue)
-
-    if self.verbose:
-      print("done")
+        print("done")
 
   def start_workers(self):
     """
