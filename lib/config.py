@@ -1,6 +1,6 @@
 import os
 
-DATASET_ROOT = "dataset"
+DATASET_ROOT = "/root/assets/kinetics/download/dataset"
 TRAIN_ROOT = os.path.join(DATASET_ROOT, "train")
 VALID_ROOT = os.path.join(DATASET_ROOT, "valid")
 TEST_ROOT = os.path.join(DATASET_ROOT, "test")
