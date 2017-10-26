@@ -22,6 +22,10 @@ class Pool:
     self.failed_save_worker = None
 
   def feed_videos(self):
+    """
+    Feed videos to a queue for workers.
+    :return:      None.
+    """
 
     for class_name in self.classes:
       source_class_dir = os.path.join(self.source_directory, class_name.replace(" ", "_"))
@@ -47,6 +51,7 @@ class Pool:
     Start all workers.
     :return:    None.
     """
+
     # start failed videos saver
     if self.failed_save_file is not None:
       self.failed_save_worker = Process(target=write_failed_worker, args=(self.failed_queue, self.failed_save_file))
@@ -63,6 +68,7 @@ class Pool:
     Stop all workers.
     :return:    None.
     """
+
     # send end signal to all download workers
     for _ in range(len(self.workers)):
       self.videos_queue.put(None)
