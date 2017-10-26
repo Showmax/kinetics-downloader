@@ -18,6 +18,7 @@ class Pool:
     :param failed_save_file:      Where to save the failed videos ids.
     :param compress:              Whether to compress the videos using gzip.
     """
+
     self.classes = classes
     self.videos_dict = videos_dict
     self.directory = directory
@@ -67,6 +68,7 @@ class Pool:
     Start all workers.
     :return:    None.
     """
+
     # start failed videos saver
     if self.failed_save_file is not None:
       self.failed_save_worker = Process(target=write_failed_worker, args=(self.failed_queue, self.failed_save_file))
@@ -83,6 +85,7 @@ class Pool:
     Stop all workers.
     :return:    None.
     """
+
     # send end signal to all download workers
     for _ in range(len(self.workers)):
       self.videos_queue.put(None)
@@ -102,6 +105,7 @@ def video_worker(videos_queue, failed_queue, compress, log_file):
   :param videos_queue:      Queue for metadata of videos to be download.
   :param failed_queue:      Queue of failed video ids.
   :param compress:          Whether to compress the videos using gzip.
+  :param log_file:          Path to a log file for youtube-dl.
   :return:                  None.
   """
 

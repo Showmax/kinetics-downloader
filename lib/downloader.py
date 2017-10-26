@@ -4,8 +4,9 @@ def download_video(video_id, download_path, video_format="mp4", log_file=None):
   """
   Download video from YouTube.
   :param video_id:        YouTube ID of the video.
-  :param directory:       Directory where to save the video.
+  :param download_path:   Where to save the video.
   :param video_format:    Format to download.
+  :param log_file:        Path to a log file for youtube-dl.
   :return:                Tuple: path to the downloaded video and a bool indicating success.
   """
 
@@ -28,11 +29,9 @@ def cut_video(raw_video_path, slice_path, start, end):
   """
   Cut out the section of interest from a video.
   :param raw_video_path:    Path to the whole video.
-  :param video_id:          YouTube ID of the video.
-  :param directory:         Directory where to save the output.
+  :param slice_path:        Where to save the slice.
   :param start:             Start of the section.
   :param end:               End of the section.
-  :param video_format:      Format of the output video.
   :return:                  Tuple: Path to the video slice and a bool indicating success.
   """
 
@@ -57,7 +56,10 @@ def process_video(video_id, directory, start, end, video_format="mp4", compress=
   :param directory:       Directory where to save the video.
   :param start:           Start of the section of interest.
   :param end:             End of the section of interest.
+  :param video_format:    Format of the processed video.
   :param compress:        Decides if the video slice should be compressed by gzip.
+  :param overwrite:       Overwrite processed videos.
+  :param log_file:        Path to a log file for youtube-dl.
   :return:                Bool indicating success.
   """
 
@@ -109,6 +111,7 @@ def download_class_sequential(class_name, videos_dict, directory, compress=False
   :param videos_dict:     Dataset metadata.
   :param directory:       Directory where to save the videos.
   :param compress:        Decides if the video slice should be compressed by gzip.
+  :param log_file:        Path to a log file for youtube-dl.
   :return:                List of videos could not be processed.
   """
 
