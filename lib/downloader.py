@@ -1,5 +1,7 @@
 import os, subprocess
 
+import lib.config as config
+
 def download_video(video_id, download_path, video_format="mp4", log_file=None):
   """
   Download video from YouTube.
@@ -15,9 +17,10 @@ def download_video(video_id, download_path, video_format="mp4", log_file=None):
   else:
     stderr = open(log_file, "a")
 
-  return_code = subprocess.call(["youtube-dl", "https://youtube.com/watch?v={}".format(video_id),
-                   "--quiet", "-f", "bestvideo[ext={}]+bestaudio/best".format(video_format),
-                   "--output", download_path, "--no-continue"], stderr=stderr)
+  return_code = subprocess.call(
+    ["youtube-dl", "https://youtube.com/watch?v={}".format(video_id), "--quiet", "-f",
+     "bestvideo[ext={}]+bestaudio/best".format(video_format), "--output", download_path, "--no-continue", "--username",
+     config.RESEARCH_ACCOUNT_USERNAME,  "--password", config.RESEARCH_ACCOUNT_PASSWORD], stderr=stderr)
   success = return_code == 0
 
   if log_file is not None:

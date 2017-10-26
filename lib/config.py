@@ -20,3 +20,6 @@ CLASSES_PATH = "resources/classes.json"
 TRAIN_METADATA_PATH = "resources/kinetics_train.json"
 VAL_METADATA_PATH = "resources/kinetics_val.json"
 TEST_METADATA_PATH = "resources/kinetics_test.json"
+
+RESEARCH_ACCOUNT_USERNAME = "research.in.deep.learning@gmail.com"
+RESEARCH_ACCOUNT_PASSWORD = "BZhVGkVm5SXXTvLwsk7W"
