@@ -1,6 +1,6 @@
 import os, subprocess
 
-def download_video(video_id, download_path, video_format="mp4"):
+def download_video(video_id, download_path, video_format="mp4", log_file=None):
   """
   Download video from YouTube.
   :param video_id:        YouTube ID of the video.
@@ -9,10 +9,18 @@ def download_video(video_id, download_path, video_format="mp4"):
   :return:                Tuple: path to the downloaded video and a bool indicating success.
   """
 
+  if log_file is None:
+    stderr = subprocess.DEVNULL
+  else:
+    stderr = open(log_file, "a")
+
   return_code = subprocess.call(["youtube-dl", "https://youtube.com/watch?v={}".format(video_id),
                    "--quiet", "-f", "bestvideo[ext={}]+bestaudio/best".format(video_format),
-                   "--output", download_path, "--no-continue"], stderr=subprocess.DEVNULL)
+                   "--output", download_path, "--no-continue"], stderr=stderr)
   success = return_code == 0
+
+  if log_file is not None:
+    stderr.close()
 
   return success
 
@@ -42,7 +50,7 @@ def compress_video(video_path):
   """
   return subprocess.call(["gzip", video_path]) == 0
 
-def process_video(video_id, directory, start, end, video_format="mp4", compress=False, overwrite=False):
+def process_video(video_id, directory, start, end, video_format="mp4", compress=False, overwrite=False, log_file=None):
   """
   Process one video for the kinetics dataset.
   :param video_id:        YouTube ID of the video.
@@ -71,7 +79,7 @@ def process_video(video_id, directory, start, end, video_format="mp4", compress=
   # sometimes videos are downloaded as mkv
   if not os.path.isfile(mkv_download_path):
     # download video and cut out the section of interest
-    success = download_video(video_id, download_path)
+    success = download_video(video_id, download_path, log_file=log_file)
 
     if not success:
       return False
@@ -94,7 +102,7 @@ def process_video(video_id, directory, start, end, video_format="mp4", compress=
 
   return True
 
-def download_class_sequential(class_name, videos_dict, directory, compress=False):
+def download_class_sequential(class_name, videos_dict, directory, compress=False, log_file=None):
   """
   Download all videos with the given label sequentially.
   :param class_name:      The label.
@@ -122,7 +130,7 @@ def download_class_sequential(class_name, videos_dict, directory, compress=False
       start = annotations["segment"][0]
       end = annotations["segment"][1]
 
-      if not process_video(key, class_dir, start, end, compress=compress):
+      if not process_video(key, class_dir, start, end, compress=compress, log_file=log_file):
         failed_videos.append(key)
 
   return failed_videos

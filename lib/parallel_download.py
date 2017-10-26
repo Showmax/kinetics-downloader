@@ -8,7 +8,8 @@ class Pool:
   A pool of video downloaders.
   """
 
-  def __init__(self, classes, videos_dict, directory, num_workers, failed_save_file, compress, verbose, skip):
+  def __init__(self, classes, videos_dict, directory, num_workers, failed_save_file, compress, verbose, skip,
+               log_file=None):
     """
     :param classes:               List of classes to download.
     :param videos_dict:           Dictionary of all videos.
@@ -25,6 +26,7 @@ class Pool:
     self.compress = compress
     self.verbose = verbose
     self.skip = skip
+    self.log_file = log_file
 
     self.videos_queue = Queue(100)
     self.failed_queue = Queue(100)
@@ -72,7 +74,7 @@ class Pool:
 
     # start download workers
     for _ in range(self.num_workers):
-      worker = Process(target=video_worker, args=(self.videos_queue, self.failed_queue, self.compress))
+      worker = Process(target=video_worker, args=(self.videos_queue, self.failed_queue, self.compress, self.log_file))
       worker.start()
       self.workers.append(worker)
 
@@ -94,7 +96,7 @@ class Pool:
       self.failed_queue.put(None)
       self.failed_save_worker.join()
 
-def video_worker(videos_queue, failed_queue, compress):
+def video_worker(videos_queue, failed_queue, compress, log_file):
   """
   Downloads videos pass in the videos queue.
   :param videos_queue:      Queue for metadata of videos to be download.
@@ -111,7 +113,7 @@ def video_worker(videos_queue, failed_queue, compress):
 
     video_id, directory, start, end = request
 
-    if not downloader.process_video(video_id, directory, start, end, compress=compress):
+    if not downloader.process_video(video_id, directory, start, end, compress=compress, log_file=log_file):
       failed_queue.put(video_id)
 
 def write_failed_worker(failed_queue, failed_save_file):
