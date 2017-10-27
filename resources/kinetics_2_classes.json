@@ -1,4 +1,4 @@
-[
-    "applauding",
-    "playing tennis"
-]
+{
+    "applauding": 0,
+    "playing tennis": 1
+}
