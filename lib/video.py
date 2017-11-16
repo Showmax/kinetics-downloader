@@ -1,4 +1,4 @@
-import cv2, os
+import cv2, os, subprocess
 
 def video_to_jpgs(video_path, save_path, do_resize=True, shorter_side=256):
 
@@ -22,6 +22,35 @@ def video_to_jpgs(video_path, save_path, do_resize=True, shorter_side=256):
   num_images = len(os.listdir(save_path))
 
   return num_frames == num_images
+
+def video_has_sound(source):
+
+  # check if the video contains sound
+  cmd1 = ["ffprobe", "-i", source, "-show_streams", "-select_streams", "a", "-loglevel", "error"]
+  output = subprocess.check_output(cmd1)
+
+  if output is None:
+    return False
+
+  output = output.decode()
+  output = output.split("\n")
+
+  if output[0] != "[STREAM]":
+    return False
+
+  return True
+
+def video_to_sound(source, target):
+
+  # convert video to sound
+  cmd2 = ["ffmpeg", "-i", source, "-vn", "-acodec", "copy", target]
+
+  try:
+    subprocess.check_call(cmd2)
+  except subprocess.CalledProcessError:
+    return False
+
+  return True
 
 def resize(frame, shorter_side=256):
   if frame.shape[0] > frame.shape[1]:
