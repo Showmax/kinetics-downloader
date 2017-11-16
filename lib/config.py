@@ -9,6 +9,10 @@ TRAIN_FRAMES_ROOT = os.path.join(DATASET_ROOT, "train_frames")
 VALID_FRAMES_ROOT = os.path.join(DATASET_ROOT, "valid_frames")
 TEST_FRAMES_ROOT = os.path.join(DATASET_ROOT, "test_frames")
 
+TRAIN_SOUND_ROOT = os.path.join(DATASET_ROOT, "train_sound")
+VALID_SOUND_ROOT = os.path.join(DATASET_ROOT, "valid_sound")
+TEST_SOUND_ROOT = os.path.join(DATASET_ROOT, "test_sound")
+
 TRAIN_FLOW_ROOT = os.path.join(DATASET_ROOT, "train_flow")
 VALID_FLOW_ROOT = os.path.join(DATASET_ROOT, "valid_flow")
 

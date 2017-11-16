@@ -17,7 +17,7 @@ def process_category(category, num_workers, failed_save_file, no_sound_save_file
 def process_classes(classes, num_workers, failed_save_file, no_sound_save_file):
 
   for source_root, target_root in zip([config.TRAIN_ROOT, config.VALID_ROOT],
-                                        [config.TRAIN_FRAMES_ROOT, config.VALID_FRAMES_ROOT]):
+                                        [config.TRAIN_SOUND_ROOT, config.VALID_SOUND_ROOT]):
 
     pool = parallel.Pool(classes, source_root, target_root, num_workers, failed_save_file, no_sound_save_file)
     pool.start_workers()
@@ -31,21 +31,21 @@ def main(args):
       categories = json.load(file)
 
     for category in categories:
-      process_category(category, args.num_workers, args.failed_log, args.no_sound_save_file)
+      process_category(category, args.num_workers, args.failed_log, args.no_sound_log)
 
   else:
     if args.categories:
       for category in args.categories:
-        process_category(category, args.num_workers, args.failed_log, args.no_sound_save_file)
+        process_category(category, args.num_workers, args.failed_log, args.no_sound_log)
 
     if args.classes:
-      process_classes(args.classes, args.num_workers, args.failed_log, args.no_sound_save_file)
+      process_classes(args.classes, args.num_workers, args.failed_log, args.no_sound_log)
 
     if args.json_classes:
       with open(args.json_classes, "r") as file:
         classes = json.load(file)
 
-      process_classes(classes, args.num_workers, args.failed_log, args.no_sound_save_file)
+      process_classes(classes, args.num_workers, args.failed_log, args.no_sound_log)
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()

@@ -43,7 +43,7 @@ def video_has_sound(source):
 def video_to_sound(source, target):
 
   # convert video to sound
-  cmd2 = ["ffmpeg", "-i", source, "-vn", "-acodec", "copy", target]
+  cmd2 = ["ffmpeg", "-i", source, target]
 
   try:
     subprocess.check_call(cmd2)

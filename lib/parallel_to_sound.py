@@ -103,7 +103,8 @@ def sound_worker(videos_queue, failed_queue, no_sound_queue):
     if os.path.isfile(target_path):
       continue
 
-    os.makedirs(target_class_dir)
+    if not os.path.isdir(target_class_dir):
+      os.makedirs(target_class_dir)
 
     if not video.video_has_sound(video_path):
       no_sound_queue.put(video_id)
