@@ -98,7 +98,7 @@ def main(args):
       "train": set_train,
       "valid": set_valid,
       "test": set_test,
-      "classes": {cls: idx for cls, idx in enumerate(sorted(set_classes))}
+      "classes": {idx: cls for cls, idx in enumerate(sorted(set_classes))}
     }
 
   # save datasets
