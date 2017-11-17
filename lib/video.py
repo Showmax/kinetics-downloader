@@ -27,7 +27,11 @@ def video_has_sound(source):
 
   # check if the video contains sound
   cmd1 = ["ffprobe", "-i", source, "-show_streams", "-select_streams", "a", "-loglevel", "error"]
-  output = subprocess.check_output(cmd1)
+
+  try:
+    output = subprocess.check_output(cmd1)
+  except subprocess.CalledProcessError:
+    return False
 
   if output is None:
     return False
