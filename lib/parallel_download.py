@@ -37,9 +37,10 @@ class Pool:
 
     if verbose:
       print("downloading:")
-      for cls in self.classes:
-        print(cls)
-      print()
+      if self.classes is not None:
+        for cls in self.classes:
+          print(cls)
+        print()
 
   def feed_videos(self):
     """
