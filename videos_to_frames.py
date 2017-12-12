@@ -47,6 +47,15 @@ def main(args):
 
       process_classes(classes, args.num_workers, args.failed_log)
 
+    if args.test:
+      with open(config.TEST_METADATA_PATH) as file:
+        data = json.load(file)
+
+      pool = parallel.Pool(None, config.TEST_ROOT, config.TEST_FRAMES_ROOT, args.num_workers, args.failed_log, args.no_sound_log)
+      pool.start_workers()
+      pool.feed_videos()
+      pool.stop_workers()
+
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()
 
@@ -54,6 +63,7 @@ if __name__ == "__main__":
   parser.add_argument("--classes", nargs="+", help="classes to download")
   parser.add_argument("--all", action="store_true", help="download the whole dataset")
   parser.add_argument("--json-classes", help="path to a JSON file with a list of classes")
+  parser.add_argument("--test", action="store_true", help="download the test set")
 
   parser.add_argument("--num-workers", type=int, default=1)
   parser.add_argument("--failed-log", default="dataset/failed_frames.txt", help="where to save list of failed videos")

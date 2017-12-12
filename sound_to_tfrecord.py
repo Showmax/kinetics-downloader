@@ -1,4 +1,4 @@
-import os, librosa
+import argparse, os, librosa
 import tensorflow as tf
 
 import lib.config as config
@@ -46,5 +46,15 @@ def convert_to_tfrecord(meta, classes, root, records_path):
 
   writer.close()
 
-convert_to_tfrecord(kinetics_sound_400_train, kinetics_classes, config.TRAIN_SOUND_ROOT, "dataset/kinetics_full_sound_400_train.tfrecords")
-convert_to_tfrecord(kinetics_sound_400_valid, kinetics_classes, config.VALID_SOUND_ROOT, "dataset/kinetics_full_sound_400_val.tfrecords")
+def main(args):
+
+  # TODO: finish
+
+  convert_to_tfrecord(kinetics_sound_400_train, kinetics_classes, config.TRAIN_SOUND_ROOT, "dataset/kinetics_full_sound_400_train.tfrecords")
+  convert_to_tfrecord(kinetics_sound_400_valid, kinetics_classes, config.VALID_SOUND_ROOT, "dataset/kinetics_full_sound_400_val.tfrecords")
+
+parser = argparse.ArgumentParser()
+parser.add_argument("subset", help="train, valid or test")
+parser.add_argument("save_path", help="tfrecords file save path")
+parsed = parser.parse_args()
+main(parsed)
