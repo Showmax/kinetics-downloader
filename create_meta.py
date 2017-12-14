@@ -91,8 +91,6 @@ def get_valid(videos, root, format):
     return get_valid_frames(videos, root)
   elif format == FORMAT_SOUND:
     return get_valid_sound(videos, root)
-  else:
-    raise ValueError("Invalid video format.")
 
 def class_keys_to_video_id_keys(videos):
   """
@@ -116,15 +114,30 @@ def main(args):
 
   # load and validate training videos
   videos = utils.load_json(config.TRAIN_METADATA_PATH)
-  train_videos = get_valid(videos, config.TRAIN_FRAMES_ROOT, args.format)
+  if args.format == FORMAT_VIDEOS:
+    train_videos = get_valid_videos(videos, config.TRAIN_ROOT)
+  elif args.format == FORMAT_FRAMES:
+    train_videos = get_valid_frames(videos, config.TRAIN_FRAMES_ROOT)
+  elif args.format == FORMAT_SOUND:
+    train_videos = get_valid_sound(videos, config.TRAIN_SOUND_ROOT)
 
   # load and validate validation videos
   videos = utils.load_json(config.VAL_METADATA_PATH)
-  validation_videos = get_valid(videos, config.VALID_FRAMES_ROOT, args.format)
+  if args.format == FORMAT_VIDEOS:
+    validation_videos = get_valid_videos(videos, config.VALID_ROOT)
+  elif args.format == FORMAT_FRAMES:
+    validation_videos = get_valid_frames(videos, config.VALID_FRAMES_ROOT)
+  elif args.format == FORMAT_SOUND:
+    validation_videos = get_valid_sound(videos, config.VALID_SOUND_ROOT)
 
   # load and validate test videos
   videos = utils.load_json(config.TEST_METADATA_PATH)
-  test_videos = get_valid(videos, config.TEST_FRAMES_ROOT, args.format)
+  if args.format == FORMAT_VIDEOS:
+    test_videos = get_valid_videos(videos, config.TEST_ROOT)
+  elif args.format == FORMAT_FRAMES:
+    test_videos = get_valid_frames(videos, config.TEST_FRAMES_ROOT)
+  elif args.format == FORMAT_SOUND:
+    test_videos = get_valid_sound(videos, config.TEST_SOUND_ROOT)
 
   # validate that all splits contain the same classes
   assert sorted(train_videos.keys()) == sorted(validation_videos.keys()) == sorted(test_videos.keys())
