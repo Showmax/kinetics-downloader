@@ -48,10 +48,10 @@ def main(args):
       process_classes(classes, args.num_workers, args.failed_log, args.no_sound_log)
 
     if args.test:
-      with open(config.TEST_METADATA_PATH) as file:
-        data = json.load(file)
+      with open("resources/kinetics_full_sound_400_classes.json") as file:
+        classes = json.load(file)
 
-      pool = parallel.Pool(None, config.TEST_ROOT, config.TEST_SOUND_ROOT, args.num_workers, args.failed_log, args.no_sound_log)
+      pool = parallel.Pool(classes, config.TEST_ROOT, config.TEST_SOUND_ROOT, args.num_workers, args.failed_log, args.no_sound_log)
       pool.start_workers()
       pool.feed_videos()
       pool.stop_workers()
