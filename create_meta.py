@@ -136,11 +136,11 @@ def main(args):
   # load and validate test videos
   videos = utils.load_json(config.TEST_METADATA_PATH)
   if args.format == FORMAT_VIDEOS:
-    test_videos = get_valid_videos(videos, config.TEST_ROOT, class_dirs=True)
+    test_videos = get_valid_videos(videos, config.TEST_ROOT, class_dirs=False)
   elif args.format == FORMAT_FRAMES:
-    test_videos = get_valid_frames(videos, config.TEST_FRAMES_ROOT, class_dirs=True)
+    test_videos = get_valid_frames(videos, config.TEST_FRAMES_ROOT, class_dirs=False)
   elif args.format == FORMAT_SOUND:
-    test_videos = get_valid_sound(videos, config.TEST_SOUND_ROOT, class_dirs=True)
+    test_videos = get_valid_sound(videos, config.TEST_SOUND_ROOT, class_dirs=False)
 
   # validate that all splits contain the same classes
 
