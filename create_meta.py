@@ -154,6 +154,9 @@ def main(args):
     set_valid = class_keys_to_video_id_keys(set_valid)
     set_test = class_keys_to_video_id_keys(set_test)
 
+    set_classes = list(sorted(set_classes))
+    set_classes = {idx: cls for idx, cls in enumerate(set_classes)}
+
     datasets[num_classes] = {
       "train": set_train,
       "valid": set_valid,
