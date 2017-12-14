@@ -42,7 +42,7 @@ def convert_to_tfrecord(meta, classes, root, records_path, class_dirs=True):
     length = audio.shape[0]
 
     example = tf.train.Example(features=tf.train.Features(feature={
-      "path": bytes_feature(file_path),
+      "path": bytes_feature(file_path.encode()),
       "length": int64_feature(length),
       "sound_raw": bytes_feature(audio_raw),
       "cls_id": int64_feature(cls_id)}))
