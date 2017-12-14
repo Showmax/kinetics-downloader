@@ -24,16 +24,14 @@ def get_valid_videos(videos, root, class_dirs=True):
       cls_path = cls.replace(" ", "_")
       video_path = os.path.join(root, cls_path, video_id + ".mp4")
     else:
+      cls = "all"
       video_path = os.path.join(root, video_id + ".mp4")
 
     if os.path.isfile(video_path):
-      if class_dirs:
-        if cls in valid_videos:
-          valid_videos[cls].append(video_id)
-        else:
-          valid_videos[cls] = [video_id]
+      if cls in valid_videos:
+        valid_videos[cls].append(video_id)
       else:
-        valid_videos.append(video_id)
+        valid_videos[cls] = [video_id]
 
   return valid_videos
 
@@ -53,16 +51,14 @@ def get_valid_frames(videos, root, class_dirs=True):
       cls_path = cls.replace(" ", "_")
       video_path = os.path.join(root, cls_path, video_id)
     else:
+      cls = "all"
       video_path = os.path.join(root, video_id)
 
     if os.path.isdir(video_path):
-      if class_dirs:
-        if cls in valid_videos:
-          valid_videos[cls].append(video_id)
-        else:
-          valid_videos[cls] = [video_id]
+      if cls in valid_videos:
+        valid_videos[cls].append(video_id)
       else:
-        valid_videos.append(video_id)
+        valid_videos[cls] = [video_id]
 
   return valid_videos
 
@@ -82,16 +78,14 @@ def get_valid_sound(videos, root, class_dirs=True):
       cls_path = cls.replace(" ", "_")
       video_path = os.path.join(root, cls_path, "{}.mp3".format(video_id))
     else:
+      cls = "all"
       video_path = os.path.join(root, "{}.mp3".format(video_id))
 
     if os.path.isfile(video_path):
-      if class_dirs:
-        if cls in valid_videos:
-          valid_videos[cls].append(video_id)
-        else:
-          valid_videos[cls] = [video_id]
+      if cls in valid_videos:
+        valid_videos[cls].append(video_id)
       else:
-        valid_videos.append(video_id)
+        valid_videos[cls] = [video_id]
 
   return valid_videos
 
