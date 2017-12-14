@@ -3,12 +3,39 @@ import argparse, os, random
 import lib.config as config
 import lib.utils as utils
 
+FORMAT_VIDEOS = "videos"
+FORMAT_FRAMES = "frames"
+FORMAT_SOUND = "sound"
+
 def get_valid_videos(videos, root):
   """
   Go through a list of videos and find all downloaded videos.
   :param videos:    The list of video metadata.
+  :param root:      Videos root.
+  :return:          List of valid video ids for each class.
+  """
+
+  valid_videos = {}
+
+  for video_id in videos.keys():
+    cls = videos[video_id]["annotations"]["label"]
+    cls_path = cls.replace(" ", "_")
+    video_path = os.path.join(root, cls_path, video_id + ".mp4")
+
+    if os.path.isfile(video_path):
+      if cls in valid_videos:
+        valid_videos[cls].append(video_id)
+      else:
+        valid_videos[cls] = [video_id]
+
+  return valid_videos
+
+def get_valid_frames(videos, root):
+  """
+  Go through a list of videos and find all downloaded video frames.
+  :param videos:    The list of video metadata.
   :param root:      Video frames root.
-  :return:
+  :return:          List of valid video ids for each class.
   """
 
   valid_videos = {}
@@ -26,27 +53,46 @@ def get_valid_videos(videos, root):
 
   return valid_videos
 
-def split_videos(videos, val_split):
+def get_valid_sound(videos, root):
   """
-  Split videos into train and valid sets.
-  :param videos:        Dictionary of classes in which each class contains a list of corresponding videos.
-  :param val_split:     Fraction of validation videos.
-  :return:              Train and validation videos dictionary. The same format as the input dictionary.
+  Go through a list of videos and find all downloaded video sound tracks.
+  :param videos:    The list of video metadata.
+  :param root:      Video sounds root.
+  :return:          List of valid video ids for each class.
   """
 
-  train_videos = {}
   valid_videos = {}
 
-  for cls, vids in videos.items():
-    random.shuffle(vids)
-    count = len(vids)
-    val_count = int(round(count * val_split))
-    train_count = count - val_count
+  for video_id in videos.keys():
+    cls = videos[video_id]["annotations"]["label"]
+    cls_path = cls.replace(" ", "_")
+    video_path = os.path.join(root, cls_path, "{}.mp3".format(video_id))
 
-    train_videos[cls] = vids[:train_count]
-    valid_videos[cls] = vids[train_count:]
+    if os.path.isfile(video_path):
+      if cls in valid_videos:
+        valid_videos[cls].append(video_id)
+      else:
+        valid_videos[cls] = [video_id]
 
-  return train_videos, valid_videos
+  return valid_videos
+
+def get_valid(videos, root, format):
+  """
+  Get valid videos based on video files, frame folders or sound files.
+  :param videos:      Videos metadata.
+  :param root:        Root directory of the videos subset.
+  :param format:      What to search for (videos, frame, sound).
+  :return:            List of valid video ids for each class.
+  """
+
+  if format == FORMAT_VIDEOS:
+    return get_valid_videos(videos, root)
+  elif format == FORMAT_FRAMES:
+    return get_valid_frames(videos, root)
+  elif format == FORMAT_SOUND:
+    return get_valid_sound(videos, root)
+  else:
+    raise ValueError("Invalid video format.")
 
 def class_keys_to_video_id_keys(videos):
   """
@@ -65,19 +111,23 @@ def class_keys_to_video_id_keys(videos):
 
 def main(args):
 
-  # load train videos metadata and find downloaded videos
-  videos = utils.load_json(config.TRAIN_METADATA_PATH)
-  valid_videos = get_valid_videos(videos, config.TRAIN_FRAMES_ROOT)
+  # validate arguments
+  assert args.format in [FORMAT_VIDEOS, FORMAT_FRAMES, FORMAT_SOUND]
 
-  # create training and validation splits
-  train_videos, valid_videos = split_videos(valid_videos, args.val_split)
+  # load and validate training videos
+  videos = utils.load_json(config.TRAIN_METADATA_PATH)
+  train_videos = get_valid(videos, config.TRAIN_FRAMES_ROOT, args.format)
+
+  # load and validate validation videos
+  videos = utils.load_json(config.VAL_METADATA_PATH)
+  validation_videos = get_valid(videos, config.VALID_FRAMES_ROOT, args.format)
 
   # load and validate test videos
-  videos = utils.load_json(config.VAL_METADATA_PATH)
-  test_videos = get_valid_videos(videos, config.VALID_FRAMES_ROOT)
+  videos = utils.load_json(config.TEST_METADATA_PATH)
+  test_videos = get_valid(videos, config.TEST_FRAMES_ROOT, args.format)
 
   # validate that all splits contain the same classes
-  assert sorted(train_videos.keys()) == sorted(valid_videos.keys()) == sorted(test_videos.keys())
+  assert sorted(train_videos.keys()) == sorted(validation_videos.keys()) == sorted(test_videos.keys())
 
   # create datasets
   datasets = {}
@@ -87,7 +137,7 @@ def main(args):
   for num_classes in args.sets:
     set_classes = classes[:num_classes]
     set_train = {cls: videos for cls, videos in train_videos.items() if cls in set_classes}
-    set_valid = {cls: videos for cls, videos in valid_videos.items() if cls in set_classes}
+    set_valid = {cls: videos for cls, videos in validation_videos.items() if cls in set_classes}
     set_test = {cls: videos for cls, videos in test_videos.items() if cls in set_classes}
 
     set_train = class_keys_to_video_id_keys(set_train)
@@ -115,10 +165,9 @@ def main(args):
 
 parser = argparse.ArgumentParser("Create a train and validation split of specified subsets of Kinetics.")
 
-parser.add_argument("meta_path", help="path to a JSON metadata file containing a list of videos")
+parser.add_argument("format", help="{}, {} or {}".format(FORMAT_VIDEOS, FORMAT_FRAMES, FORMAT_SOUND))
 
-parser.add_argument("-s", "--sets", type=int, nargs="+", default=[400, 200, 100, 50, 2])
-parser.add_argument("-v", "--val-split", type=float, default=0.05)
+parser.add_argument("-s", "--sets", type=int, nargs="+", default=[400], help="list of sets to generate, each integer denotes number of classes in the set")
 parser.add_argument("--save", default="resources/kinetics", help="save path")
 
 parsed = parser.parse_args()
