@@ -7,7 +7,7 @@ FORMAT_VIDEOS = "videos"
 FORMAT_FRAMES = "frames"
 FORMAT_SOUND = "sound"
 
-def get_valid_videos(videos, root):
+def get_valid_videos(videos, root, class_dirs=True):
   """
   Go through a list of videos and find all downloaded videos.
   :param videos:    The list of video metadata.
@@ -18,9 +18,13 @@ def get_valid_videos(videos, root):
   valid_videos = {}
 
   for video_id in videos.keys():
-    cls = videos[video_id]["annotations"]["label"]
-    cls_path = cls.replace(" ", "_")
-    video_path = os.path.join(root, cls_path, video_id + ".mp4")
+
+    if class_dirs:
+      cls = videos[video_id]["annotations"]["label"]
+      cls_path = cls.replace(" ", "_")
+      video_path = os.path.join(root, cls_path, video_id + ".mp4")
+    else:
+      video_path = os.path.join(root, video_id + ".mp4")
 
     if os.path.isfile(video_path):
       if cls in valid_videos:
@@ -30,7 +34,7 @@ def get_valid_videos(videos, root):
 
   return valid_videos
 
-def get_valid_frames(videos, root):
+def get_valid_frames(videos, root, class_dirs=True):
   """
   Go through a list of videos and find all downloaded video frames.
   :param videos:    The list of video metadata.
@@ -41,9 +45,12 @@ def get_valid_frames(videos, root):
   valid_videos = {}
 
   for video_id in videos.keys():
-    cls = videos[video_id]["annotations"]["label"]
-    cls_path = cls.replace(" ", "_")
-    video_path = os.path.join(root, cls_path, video_id)
+    if class_dirs:
+      cls = videos[video_id]["annotations"]["label"]
+      cls_path = cls.replace(" ", "_")
+      video_path = os.path.join(root, cls_path, video_id)
+    else:
+      video_path = os.path.join(root, video_id)
 
     if os.path.isdir(video_path):
       if cls in valid_videos:
@@ -53,7 +60,7 @@ def get_valid_frames(videos, root):
 
   return valid_videos
 
-def get_valid_sound(videos, root):
+def get_valid_sound(videos, root, class_dirs=True):
   """
   Go through a list of videos and find all downloaded video sound tracks.
   :param videos:    The list of video metadata.
@@ -64,9 +71,12 @@ def get_valid_sound(videos, root):
   valid_videos = {}
 
   for video_id in videos.keys():
-    cls = videos[video_id]["annotations"]["label"]
-    cls_path = cls.replace(" ", "_")
-    video_path = os.path.join(root, cls_path, "{}.mp3".format(video_id))
+    if class_dirs:
+      cls = videos[video_id]["annotations"]["label"]
+      cls_path = cls.replace(" ", "_")
+      video_path = os.path.join(root, cls_path, "{}.mp3".format(video_id))
+    else:
+      video_path = os.path.join(root, "{}.mp3".format(video_id))
 
     if os.path.isfile(video_path):
       if cls in valid_videos:
@@ -75,22 +85,6 @@ def get_valid_sound(videos, root):
         valid_videos[cls] = [video_id]
 
   return valid_videos
-
-def get_valid(videos, root, format):
-  """
-  Get valid videos based on video files, frame folders or sound files.
-  :param videos:      Videos metadata.
-  :param root:        Root directory of the videos subset.
-  :param format:      What to search for (videos, frame, sound).
-  :return:            List of valid video ids for each class.
-  """
-
-  if format == FORMAT_VIDEOS:
-    return get_valid_videos(videos, root)
-  elif format == FORMAT_FRAMES:
-    return get_valid_frames(videos, root)
-  elif format == FORMAT_SOUND:
-    return get_valid_sound(videos, root)
 
 def class_keys_to_video_id_keys(videos):
   """
@@ -119,7 +113,7 @@ def main(args):
   elif args.format == FORMAT_FRAMES:
     train_videos = get_valid_frames(videos, config.TRAIN_FRAMES_ROOT)
   elif args.format == FORMAT_SOUND:
-    train_videos = get_valid_sound(videos, config.TRAIN_SOUND_ROOT)
+    train_videos = get_valid_sound(videos, config.TRAIN_SOUND_ROOT, class_dirs=True)
 
   # load and validate validation videos
   videos = utils.load_json(config.VAL_METADATA_PATH)
@@ -128,7 +122,7 @@ def main(args):
   elif args.format == FORMAT_FRAMES:
     validation_videos = get_valid_frames(videos, config.VALID_FRAMES_ROOT)
   elif args.format == FORMAT_SOUND:
-    validation_videos = get_valid_sound(videos, config.VALID_SOUND_ROOT)
+    validation_videos = get_valid_sound(videos, config.VALID_SOUND_ROOT, class_dirs=True)
 
   # load and validate test videos
   videos = utils.load_json(config.TEST_METADATA_PATH)
@@ -137,7 +131,7 @@ def main(args):
   elif args.format == FORMAT_FRAMES:
     test_videos = get_valid_frames(videos, config.TEST_FRAMES_ROOT)
   elif args.format == FORMAT_SOUND:
-    test_videos = get_valid_sound(videos, config.TEST_SOUND_ROOT)
+    test_videos = get_valid_sound(videos, config.TEST_SOUND_ROOT, class_dirs=True)
 
   # validate that all splits contain the same classes
 
