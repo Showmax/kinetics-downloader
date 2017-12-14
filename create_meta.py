@@ -24,7 +24,7 @@ def get_valid_videos(videos, root, class_dirs=True):
       cls_path = cls.replace(" ", "_")
       video_path = os.path.join(root, cls_path, video_id + ".mp4")
     else:
-      cls = "all"
+      cls = ""
       video_path = os.path.join(root, video_id + ".mp4")
 
     if os.path.isfile(video_path):
@@ -51,7 +51,7 @@ def get_valid_frames(videos, root, class_dirs=True):
       cls_path = cls.replace(" ", "_")
       video_path = os.path.join(root, cls_path, video_id)
     else:
-      cls = "all"
+      cls = ""
       video_path = os.path.join(root, video_id)
 
     if os.path.isdir(video_path):
@@ -78,7 +78,7 @@ def get_valid_sound(videos, root, class_dirs=True):
       cls_path = cls.replace(" ", "_")
       video_path = os.path.join(root, cls_path, "{}.mp3".format(video_id))
     else:
-      cls = "all"
+      cls = ""
       video_path = os.path.join(root, "{}.mp3".format(video_id))
 
     if os.path.isfile(video_path):
@@ -137,12 +137,6 @@ def main(args):
     test_videos = get_valid_sound(videos, config.TEST_SOUND_ROOT, class_dirs=False)
 
   # validate that all splits contain the same classes
-
-  print(len(train_videos.keys()))
-  print(len(validation_videos.keys()))
-  print(len(test_videos.keys()))
-  print(test_videos)
-
   assert sorted(train_videos.keys()) == sorted(validation_videos.keys()) == sorted(test_videos.keys())
 
   # create datasets
@@ -154,7 +148,7 @@ def main(args):
     set_classes = classes[:num_classes]
     set_train = {cls: videos for cls, videos in train_videos.items() if cls in set_classes}
     set_valid = {cls: videos for cls, videos in validation_videos.items() if cls in set_classes}
-    set_test = {cls: videos for cls, videos in test_videos.items() if cls in set_classes}
+    set_test = test_videos
 
     set_train = class_keys_to_video_id_keys(set_train)
     set_valid = class_keys_to_video_id_keys(set_valid)
