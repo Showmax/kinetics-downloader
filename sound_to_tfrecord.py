@@ -19,7 +19,7 @@ def bytes_feature(value):
 def int64_feature(value):
   return tf.train.Feature(int64_list=tf.train.Int64List(value=[value]))
 
-def convert_to_tfrecord(meta, classes, root, records_path):
+def convert_to_tfrecord(meta, classes, root, records_path, class_dirs=True):
 
   writer = tf.python_io.TFRecordWriter(records_path)
 
@@ -29,8 +29,12 @@ def convert_to_tfrecord(meta, classes, root, records_path):
     if i > 0 and i % 100 == 0:
       print(i)
 
-    cls_id = classes[cls_name]
-    file_path = os.path.join(root, cls_name.replace(" ", "_"), path + ".mp3")
+    if class_dirs:
+      cls_id = classes[cls_name]
+      file_path = os.path.join(root, cls_name.replace(" ", "_"), path + ".mp3")
+    else:
+      cls_id = 0
+      file_path = os.path.join(root, path + ".mp3")
 
     audio = load_audio(file_path)
     audio_raw = audio.tostring()
@@ -52,12 +56,15 @@ def main(args):
 
   if args.subset == "train":
     root = config.TRAIN_SOUND_ROOT
+    cls_dirs = True
   elif args.subset == "valid":
     root = config.VALID_SOUND_ROOT
+    cls_dirs = True
   elif args.subset == "test":
     root = config.TEST_SOUND_ROOT
+    cls_dirs = False
 
-  convert_to_tfrecord(utils.load_json(args.meta_path), utils.load_json(args.classes_path), root, args.save_path)
+  convert_to_tfrecord(utils.load_json(args.meta_path), utils.load_json(args.classes_path), root, args.save_path, class_dirs=cls_dirs)
 
 parser = argparse.ArgumentParser()
 parser.add_argument("subset", help="train, valid or test")
