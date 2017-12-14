@@ -48,13 +48,19 @@ def convert_to_tfrecord(meta, classes, root, records_path):
 
 def main(args):
 
-  # TODO: finish
+  if args.subset == "train":
+    root = config.TRAIN_SOUND_ROOT
+  elif args.subset == "valid":
+    root = config.VALID_SOUND_ROOT
+  elif args.subset == "test":
+    root = config.TEST_SOUND_ROOT
 
-  convert_to_tfrecord(kinetics_sound_400_train, kinetics_classes, config.TRAIN_SOUND_ROOT, "dataset/kinetics_full_sound_400_train.tfrecords")
-  convert_to_tfrecord(kinetics_sound_400_valid, kinetics_classes, config.VALID_SOUND_ROOT, "dataset/kinetics_full_sound_400_val.tfrecords")
+  convert_to_tfrecord(utils.load_json(args.meta_path), utils.load_json(args.classes_path), root, args.save_path)
 
 parser = argparse.ArgumentParser()
 parser.add_argument("subset", help="train, valid or test")
+parser.add_argument("meta_path", help="metadata path")
+parser.add_argument("classes_path", help="classes path")
 parser.add_argument("save_path", help="tfrecords file save path")
 parsed = parser.parse_args()
 main(parsed)

@@ -137,7 +137,7 @@ def main(args):
     test_videos = get_valid_sound(videos, config.TEST_SOUND_ROOT, class_dirs=False)
 
   # validate that all splits contain the same classes
-  assert sorted(train_videos.keys()) == sorted(validation_videos.keys()) == sorted(test_videos.keys())
+  assert sorted(train_videos.keys()) == sorted(validation_videos.keys())
 
   # create datasets
   datasets = {}
