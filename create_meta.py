@@ -113,7 +113,7 @@ def main(args):
   elif args.format == FORMAT_FRAMES:
     train_videos = get_valid_frames(videos, config.TRAIN_FRAMES_ROOT)
   elif args.format == FORMAT_SOUND:
-    train_videos = get_valid_sound(videos, config.TRAIN_SOUND_ROOT, class_dirs=True)
+    train_videos = get_valid_sound(videos, config.TRAIN_SOUND_ROOT)
 
   # load and validate validation videos
   videos = utils.load_json(config.VAL_METADATA_PATH)
@@ -122,14 +122,14 @@ def main(args):
   elif args.format == FORMAT_FRAMES:
     validation_videos = get_valid_frames(videos, config.VALID_FRAMES_ROOT)
   elif args.format == FORMAT_SOUND:
-    validation_videos = get_valid_sound(videos, config.VALID_SOUND_ROOT, class_dirs=True)
+    validation_videos = get_valid_sound(videos, config.VALID_SOUND_ROOT)
 
   # load and validate test videos
   videos = utils.load_json(config.TEST_METADATA_PATH)
   if args.format == FORMAT_VIDEOS:
-    test_videos = get_valid_videos(videos, config.TEST_ROOT)
+    test_videos = get_valid_videos(videos, config.TEST_ROOT, class_dirs=True)
   elif args.format == FORMAT_FRAMES:
-    test_videos = get_valid_frames(videos, config.TEST_FRAMES_ROOT)
+    test_videos = get_valid_frames(videos, config.TEST_FRAMES_ROOT, class_dirs=True)
   elif args.format == FORMAT_SOUND:
     test_videos = get_valid_sound(videos, config.TEST_SOUND_ROOT, class_dirs=True)
 
@@ -138,6 +138,7 @@ def main(args):
   print(len(train_videos.keys()))
   print(len(validation_videos.keys()))
   print(len(test_videos.keys()))
+  print(test_videos)
 
   assert sorted(train_videos.keys()) == sorted(validation_videos.keys()) == sorted(test_videos.keys())
 
