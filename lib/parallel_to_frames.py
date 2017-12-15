@@ -107,6 +107,8 @@ def video_worker(videos_queue, failed_queue):
     os.makedirs(target_dir)
 
     print("continue")
+    print(video_path)
+    print(target_dir)
 
     if not video.video_to_jpgs(video_path, target_dir):
       failed_queue.put(video_id)
