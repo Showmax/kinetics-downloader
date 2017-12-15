@@ -51,7 +51,7 @@ def main(args):
       with open(config.TEST_METADATA_PATH) as file:
         data = json.load(file)
 
-      pool = parallel.Pool(None, config.TEST_ROOT, config.TEST_FRAMES_ROOT, args.num_workers, args.failed_log, args.no_sound_log)
+      pool = parallel.Pool(None, config.TEST_ROOT, config.TEST_FRAMES_ROOT, args.num_workers, args.failed_log)
       pool.start_workers()
       pool.feed_videos()
       pool.stop_workers()
