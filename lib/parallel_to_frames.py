@@ -33,7 +33,6 @@ class Pool:
       for filename in videos:
         video_path = os.path.join(self.source_directory, filename)
         video_id = ".".join(filename.split(".")[:-1])
-        print(video_id)
         target_dir_path = os.path.join(self.target_directory, video_id)
         self.videos_queue.put((video_id, video_path, target_dir_path))
     else:
@@ -106,6 +105,8 @@ def video_worker(videos_queue, failed_queue):
       continue
 
     os.makedirs(target_dir)
+
+    print("continue")
 
     if not video.video_to_jpgs(video_path, target_dir):
       failed_queue.put(video_id)
