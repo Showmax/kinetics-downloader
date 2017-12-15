@@ -27,24 +27,32 @@ class Pool:
     :return:      None.
     """
 
-    for class_name in self.classes:
-      source_class_dir = os.path.join(self.source_directory, class_name.replace(" ", "_"))
-      target_class_dir = os.path.join(self.target_directory, class_name.replace(" ", "_"))
-
-      if not os.path.isdir(target_class_dir):
-        # when using multiple processes, the folder might have been already created (after the if was evaluated)
-        try:
-          os.makedirs(target_class_dir)
-        except FileExistsError:
-          pass
-
-      videos = os.listdir(source_class_dir)
+    if self.classes is None:
+      videos = os.listdir(self.source_directory)
 
       for filename in videos:
-        video_path = os.path.join(source_class_dir, filename)
+        video_path = os.path.join(self.source_directory, filename)
         video_id = ".".join(filename.split(".")[:-1])
-        target_dir_path = os.path.join(target_class_dir, video_id)
-        self.videos_queue.put((video_id, video_path, target_dir_path))
+        self.videos_queue.put((video_id, video_path, self.target_directory))
+    else:
+      for class_name in self.classes:
+        source_class_dir = os.path.join(self.source_directory, class_name.replace(" ", "_"))
+        target_class_dir = os.path.join(self.target_directory, class_name.replace(" ", "_"))
+
+        if not os.path.isdir(target_class_dir):
+          # when using multiple processes, the folder might have been already created (after the if was evaluated)
+          try:
+            os.makedirs(target_class_dir)
+          except FileExistsError:
+            pass
+
+        videos = os.listdir(source_class_dir)
+
+        for filename in videos:
+          video_path = os.path.join(source_class_dir, filename)
+          video_id = ".".join(filename.split(".")[:-1])
+          target_dir_path = os.path.join(target_class_dir, video_id)
+          self.videos_queue.put((video_id, video_path, target_dir_path))
 
   def start_workers(self):
     """
