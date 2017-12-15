@@ -46,9 +46,19 @@ python list_categories.py
 
 **Extract frames from videos**:
 
+Extracting frames from the video files is useful because loading mp4 files
+during training is time-consuming. Additionally, current Neural Networks are
+usually training on a small subset of video frames from each video making it wasteful to
+load the whole video.
+
 ```
 python videos_to_frames.py --all
 ```
+
+The script uses VideoCapture from the **OpenCV** library. If you installed the library
+using `pip install opencv-python` it will not work because video-related functionality
+is not supported in this build ([see this stackoverflow question](https://stackoverflow.com/questions/21792909/cv2-videocapture-open-always-returns-false)).
+You will need to build [OpenCV](https://github.com/opencv/opencv) with video-related functionality enabled to use this script.
 
 **Extract sound tracks from videos**:
 
