@@ -33,6 +33,7 @@ class Pool:
       for filename in videos:
         video_path = os.path.join(self.source_directory, filename)
         video_id = ".".join(filename.split(".")[:-1])
+        print(video_id)
         target_dir_path = os.path.join(self.target_directory, video_id)
         self.videos_queue.put((video_id, video_path, target_dir_path))
     else:
