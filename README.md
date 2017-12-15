@@ -83,6 +83,12 @@ Generate metadata for sound tracks:
 python create_meta.py sound --sets 400 --save resources/kinetics_sound
 ```
 
+The **--sets** switch dictates how many classes will be included in the metadata.
+Example use case: we want to select the hyper-parameters of our neural networks on a small subset
+of Kinetics (let's say 50 from the 400 classes) and then train the neural network on the whole
+dataset. Therefore, we will call `python create_meta.py frames --sets 50 400 --save resources/kinetics_video_frames`
+to generate metadata for 50 randomly chosen classes and for all 400 classes.
+
 **Convert sound tracks into a tfrecords file**:
 
 Loading mp3 files in Tensorflow (as of version 1.3.0) creates a severe bottleneck for the training speed.
@@ -95,6 +101,7 @@ python sound_to_tfrecords.py train resources/kinetics_sound_400_train.json resou
 ```
 
 Note:
+
 First, you will need to generate metadata for sound tracks.
 
 #### Download structure
@@ -103,6 +110,7 @@ The training and validation videos are downloaded into their individual director
 Furthermore, a directory is created for each class.
 
 Example:
+
 ```
 dataset/train/blowing_glass
 dataset/valid/blowing_glass
@@ -110,7 +118,8 @@ dataset/valid/blowing_glass
 
 Test videos are all downloaded into a single directory because their classes are not known.
 
-Example"
+Example:
+
 ```
 dataset/test
 ```
