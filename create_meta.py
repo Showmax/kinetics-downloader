@@ -1,11 +1,8 @@
 import argparse, os, random
 
 import lib.config as config
+import lib.constants as constants
 import lib.utils as utils
-
-FORMAT_VIDEOS = "videos"
-FORMAT_FRAMES = "frames"
-FORMAT_SOUND = "sound"
 
 def get_valid_videos(videos, root, class_dirs=True):
   """
@@ -110,38 +107,38 @@ def class_keys_to_video_id_keys(videos):
 
 def main(args):
 
-  # validate arguments
-  assert args.format in [FORMAT_VIDEOS, FORMAT_FRAMES, FORMAT_SOUND]
-
   # load and validate training videos
   videos = utils.load_json(config.TRAIN_METADATA_PATH)
-  train_videos = None
-  if args.format == FORMAT_VIDEOS:
+  if args.format == constants.FORMAT_VIDEOS:
     train_videos = get_valid_videos(videos, config.TRAIN_ROOT)
-  elif args.format == FORMAT_FRAMES:
+  elif args.format == constants.FORMAT_FRAMES:
     train_videos = get_valid_frames(videos, config.TRAIN_FRAMES_ROOT)
-  elif args.format == FORMAT_SOUND:
+  elif args.format == constants.FORMAT_SOUND:
     train_videos = get_valid_sound(videos, config.TRAIN_SOUND_ROOT)
+  else:
+    raise ValueError("Invalid format type.")
 
   # load and validate validation videos
   videos = utils.load_json(config.VAL_METADATA_PATH)
-  validation_videos = None
-  if args.format == FORMAT_VIDEOS:
+  if args.format == constants.FORMAT_VIDEOS:
     validation_videos = get_valid_videos(videos, config.VALID_ROOT)
-  elif args.format == FORMAT_FRAMES:
+  elif args.format == constants.FORMAT_FRAMES:
     validation_videos = get_valid_frames(videos, config.VALID_FRAMES_ROOT)
-  elif args.format == FORMAT_SOUND:
+  elif args.format == constants.FORMAT_SOUND:
     validation_videos = get_valid_sound(videos, config.VALID_SOUND_ROOT)
+  else:
+    raise ValueError("Invalid format type.")
 
   # load and validate test videos
   videos = utils.load_json(config.TEST_METADATA_PATH)
-  test_videos = None
-  if args.format == FORMAT_VIDEOS:
+  if args.format == constants.FORMAT_VIDEOS:
     test_videos = get_valid_videos(videos, config.TEST_ROOT, class_dirs=False)
-  elif args.format == FORMAT_FRAMES:
+  elif args.format == constants.FORMAT_FRAMES:
     test_videos = get_valid_frames(videos, config.TEST_FRAMES_ROOT, class_dirs=False)
-  elif args.format == FORMAT_SOUND:
+  elif args.format == constants.FORMAT_SOUND:
     test_videos = get_valid_sound(videos, config.TEST_SOUND_ROOT, class_dirs=False)
+  else:
+    raise ValueError("Invalid format type.")
 
   # validate that training and validation sets contain the same classes
   assert sorted(train_videos.keys()) == sorted(validation_videos.keys())
@@ -186,7 +183,8 @@ def main(args):
 parser = argparse.ArgumentParser("Create metadata for all downloaded videos with the option to limit the number of "
                                  "classes included.")
 
-parser.add_argument("format", help="{}, {} or {}".format(FORMAT_VIDEOS, FORMAT_FRAMES, FORMAT_SOUND))
+parser.add_argument("format", help="{}, {} or {}".format(constants.FORMAT_VIDEOS, constants.FORMAT_FRAMES,
+                                                         constants.FORMAT_SOUND))
 
 parser.add_argument("-s", "--sets", type=int, nargs="+", default=[400], help="list of sets to generate, each integer "
                                                                              "denotes number of classes in the set")

@@ -142,6 +142,10 @@ The videos are all download in mp4. If a video isn't available in mp4, it's down
 Videos' file names correspond to their YouTube IDs. All spaces in directory names are replaced with
 underscores (e.g. blowing glass => blowing_glass).
 
+#### Acknowledgements
+
+The sound to tfrecords script is based on [this tutorial](http://warmspringwinds.github.io/tensorflow/tf-slim/2016/12/21/tfrecords-guide/).
+
 #### References
 
 [[1] The Kinetics Human Action Video Dataset - W.Kay et al. (2017)](https://arxiv.org/abs/1705.06950)
