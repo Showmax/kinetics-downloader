@@ -114,6 +114,20 @@ Note:
 
 First, you will need to generate metadata for sound tracks.
 
+**Other scripts**:
+
+Download statistics (e.g. fraction of videos downloaded):
+
+```
+python download_stats.py
+```
+
+Video statistics (e.g. histogram of video resolutions):
+
+```
+python video_stats.py
+```
+
 #### Download structure
 
 The training and validation videos are downloaded into their individual directories.
