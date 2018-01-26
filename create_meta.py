@@ -10,9 +10,10 @@ FORMAT_SOUND = "sound"
 def get_valid_videos(videos, root, class_dirs=True):
   """
   Go through a list of videos and find all downloaded videos.
-  :param videos:    The list of video metadata.
-  :param root:      Videos root.
-  :return:          List of valid video ids for each class.
+  :param videos:        The list of video metadata.
+  :param root:          Videos root.
+  :param class_dirs:    Expect videos to be located in folders named after their classes (e.g. jogging/0123.mp4).
+  :return:              List of valid video ids for each class.
   """
 
   valid_videos = {}
@@ -38,9 +39,11 @@ def get_valid_videos(videos, root, class_dirs=True):
 def get_valid_frames(videos, root, class_dirs=True):
   """
   Go through a list of videos and find all downloaded video frames.
-  :param videos:    The list of video metadata.
-  :param root:      Video frames root.
-  :return:          List of valid video ids for each class.
+  :param videos:        The list of video metadata.
+  :param root:          Video frames root.
+  :param class_dirs:    Expect frames to be located in folders named after their classes
+                        (e.g. jogging/0123/frame0.jpg ...).
+  :return:              List of valid video ids for each class.
   """
 
   valid_videos = {}
@@ -66,8 +69,9 @@ def get_valid_sound(videos, root, class_dirs=True):
   """
   Go through a list of videos and find all downloaded video sound tracks.
   :param videos:    The list of video metadata.
-  :param root:      Video sounds root.
-  :return:          List of valid video ids for each class.
+  :param root:          Video sounds root.
+  :param class_dirs:    Expect sounds to be located in folders named after their classes (e.g. jogging/0123.mp3).
+  :return:              List of valid video ids for each class.
   """
 
   valid_videos = {}
@@ -111,6 +115,7 @@ def main(args):
 
   # load and validate training videos
   videos = utils.load_json(config.TRAIN_METADATA_PATH)
+  train_videos = None
   if args.format == FORMAT_VIDEOS:
     train_videos = get_valid_videos(videos, config.TRAIN_ROOT)
   elif args.format == FORMAT_FRAMES:
@@ -120,6 +125,7 @@ def main(args):
 
   # load and validate validation videos
   videos = utils.load_json(config.VAL_METADATA_PATH)
+  validation_videos = None
   if args.format == FORMAT_VIDEOS:
     validation_videos = get_valid_videos(videos, config.VALID_ROOT)
   elif args.format == FORMAT_FRAMES:
@@ -129,6 +135,7 @@ def main(args):
 
   # load and validate test videos
   videos = utils.load_json(config.TEST_METADATA_PATH)
+  test_videos = None
   if args.format == FORMAT_VIDEOS:
     test_videos = get_valid_videos(videos, config.TEST_ROOT, class_dirs=False)
   elif args.format == FORMAT_FRAMES:
@@ -136,7 +143,7 @@ def main(args):
   elif args.format == FORMAT_SOUND:
     test_videos = get_valid_sound(videos, config.TEST_SOUND_ROOT, class_dirs=False)
 
-  # validate that all splits contain the same classes
+  # validate that training and validation sets contain the same classes
   assert sorted(train_videos.keys()) == sorted(validation_videos.keys())
 
   # create datasets
@@ -176,11 +183,13 @@ def main(args):
     utils.save_json(test_path, dataset["test"])
     utils.save_json(classes_path, dataset["classes"])
 
-parser = argparse.ArgumentParser("Create a train and validation split of specified subsets of Kinetics.")
+parser = argparse.ArgumentParser("Create metadata for all downloaded videos with the option to limit the number of "
+                                 "classes included.")
 
 parser.add_argument("format", help="{}, {} or {}".format(FORMAT_VIDEOS, FORMAT_FRAMES, FORMAT_SOUND))
 
-parser.add_argument("-s", "--sets", type=int, nargs="+", default=[400], help="list of sets to generate, each integer denotes number of classes in the set")
+parser.add_argument("-s", "--sets", type=int, nargs="+", default=[400], help="list of sets to generate, each integer "
+                                                                             "denotes number of classes in the set")
 parser.add_argument("--save", default="resources/kinetics", help="save path")
 
 parsed = parser.parse_args()
