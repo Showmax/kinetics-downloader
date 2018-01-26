@@ -4,28 +4,13 @@ import numpy as np
 import lib.config as config
 import lib.utils as utils
 
-train_metadata = utils.load_json("resources/kinetics_400_train.json")
-
-class Avg:
-  """
-  Simple streaming average data structure.
-  """
-
-  def __init__(self):
-    self.avg = 0
-    self.count = 0
-
-  def add(self, value):
-    self.avg = (self.avg * self.count + value) / (self.count + 1)
-    self.count += 1
-
 def main(args):
 
-  r_avg = Avg()
-  g_avg = Avg()
-  b_avg = Avg()
+  r_avg = utils.StreamingAverage()
+  g_avg = utils.StreamingAverage()
+  b_avg = utils.StreamingAverage()
 
-  for video_id, cls in train_metadata.items():
+  for video_id, cls in args.train_metadata.items():
 
     video_folder_path = os.path.join(config.TRAIN_FRAMES_ROOT, cls.replace(" ", "_"), video_id)
 
@@ -50,8 +35,9 @@ def main(args):
   means = [r_avg.avg, g_avg.avg, b_avg.avg]
   np.save(args.save_path, means)
 
-parser = argparse.ArgumentParser("Compute means over the whole training split (kinetics_400_train) of Kinetics.")
+parser = argparse.ArgumentParser("Compute means over a subset (most likely the training subset) of Kinetics.")
 
+parser.add_argument("train_metadata", help="metadata containing all downloaded videos")
 parser.add_argument("save_path", help="where to save a numpy array containing R, G and B channel means")
 
 parsed = parser.parse_args()
