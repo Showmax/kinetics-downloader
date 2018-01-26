@@ -123,8 +123,7 @@ if __name__ == "__main__":
 
   parser.add_argument("--num-workers", type=int, default=1, help="number of downloader processes")
   parser.add_argument("--failed-log", default="dataset/failed.txt", help="where to save list of failed videos")
-  parser.add_argument("--compress", default=False, action="store_true", help="compress videos using gzip")
-  parser.add_argument("--overwrite", default=False, action="store_true", help="overwrite downloaded videos")
+  parser.add_argument("--compress", default=False, action="store_true", help="compress videos using gzip (not recommended)")
   parser.add_argument("-v", "--verbose", default=False, action="store_true", help="print additional info")
   parser.add_argument("-s", "--skip", default=False, action="store_true", help="skip classes that already have folders")
   parser.add_argument("-l", "--log-file", help="log file for youtube-dl (the library used to download YouTube videos)")

@@ -119,6 +119,7 @@ def main(args):
     test_present, test_present + test_missing, test_percent_found))
 
 if __name__ == "__main__":
+
   parser = argparse.ArgumentParser("Print statistics about downloaded videos.")
 
   parser.add_argument("-d", "--details", action="store_true", default=False, help="detailed stats for each found class")

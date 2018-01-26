@@ -5,6 +5,14 @@ from lib.ffmpeg import Medium
 from lib.utils import DiscreteHistogram
 
 def scan_video(path, frame_rate_hist, video_duration_hist, resolution_hist):
+  """
+  Compute statistics for a single video.
+  :param path:                      Path to the video.
+  :param frame_rate_hist:           Frame rate histogram object.
+  :param video_duration_hist:       Video duration histogram object.
+  :param resolution_hist:           Video resolution histogram object.
+  :return:                          None.
+  """
 
   vid = Medium(Medium.Type.VIDEO)
   vid.from_file(path)
@@ -41,9 +49,11 @@ def main(args):
   print()
 
 if __name__ == "__main__":
-  parser = argparse.ArgumentParser()
 
-  parser.add_argument("-t", "--threshold", default=None)
+  parser = argparse.ArgumentParser("Compute statistics for downloaded videos.")
+
+  parser.add_argument("-t", "--threshold", type=int, default=None,
+                      help="do not consider values that appear less than t times")
 
   parsed = parser.parse_args()
   main(parsed)
