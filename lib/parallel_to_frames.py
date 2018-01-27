@@ -40,14 +40,15 @@ class Pool:
         source_class_dir = os.path.join(self.source_directory, class_name.replace(" ", "_"))
         target_class_dir = os.path.join(self.target_directory, class_name.replace(" ", "_"))
 
-        if not os.path.isdir(target_class_dir):
-          # when using multiple processes, the folder might have been already created (after the if was evaluated)
-          try:
-            os.makedirs(target_class_dir)
-          except FileExistsError:
-            pass
-
         if os.path.isdir(source_class_dir):
+
+          if not os.path.isdir(target_class_dir):
+            # when using multiple processes, the folder might have been already created (after the if was evaluated)
+            try:
+              os.makedirs(target_class_dir)
+            except FileExistsError:
+              pass
+
           videos = os.listdir(source_class_dir)
 
           for filename in videos:
@@ -93,6 +94,12 @@ class Pool:
       self.failed_save_worker.join()
 
 def video_worker(videos_queue, failed_queue):
+  """
+  Process video files.
+  :param videos_queue:      Queue of video paths.
+  :param failed_queue:      Queue for failed videos.
+  :return:                  None.
+  """
 
   while True:
     request = videos_queue.get()

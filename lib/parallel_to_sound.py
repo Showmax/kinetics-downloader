@@ -43,20 +43,22 @@ class Pool:
         source_class_dir = os.path.join(self.source_directory, class_name.replace(" ", "_"))
         target_class_dir = os.path.join(self.target_directory, class_name.replace(" ", "_"))
 
-        if not os.path.isdir(target_class_dir):
-          # when using multiple processes, the folder might have been already created (after the if was evaluated)
-          try:
-            os.makedirs(target_class_dir)
-          except FileExistsError:
-            pass
+        if os.path.isdir(source_class_dir):
 
-        videos = os.listdir(source_class_dir)
+          if not os.path.isdir(target_class_dir):
+            # when using multiple processes, the folder might have been already created (after the if was evaluated)
+            try:
+              os.makedirs(target_class_dir)
+            except FileExistsError:
+              pass
 
-        for filename in videos:
-          video_path = os.path.join(source_class_dir, filename)
-          video_id = ".".join(filename.split(".")[:-1])
-          target_path = os.path.join(target_class_dir, "{}.mp3".format(video_id))
-          self.videos_queue.put((video_id, video_path, target_class_dir, target_path))
+          videos = os.listdir(source_class_dir)
+
+          for filename in videos:
+            video_path = os.path.join(source_class_dir, filename)
+            video_id = ".".join(filename.split(".")[:-1])
+            target_path = os.path.join(target_class_dir, "{}.mp3".format(video_id))
+            self.videos_queue.put((video_id, video_path, target_class_dir, target_path))
 
   def start_workers(self):
     """
@@ -100,6 +102,13 @@ class Pool:
       self.failed_save_worker.join()
 
 def sound_worker(videos_queue, failed_queue, no_sound_queue):
+  """
+  Process video files.
+  :param videos_queue:        Queue of video paths.
+  :param failed_queue:        Queue for failed videos.
+  :param no_sound_queue:      Queue for videos with no sound.
+  :return:                    None.
+  """
 
   while True:
     request = videos_queue.get()
