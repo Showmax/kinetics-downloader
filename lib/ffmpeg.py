@@ -121,6 +121,7 @@ class Medium:
     :param path:      Path to the file.
     :return:          None.
     """
+
     result = subprocess.check_output(["ffprobe", path, "-print_format", "json", "-show_streams"], stderr=subprocess.DEVNULL)
     result = result.decode()
     obj = json.loads(result)
