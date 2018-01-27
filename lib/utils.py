@@ -65,7 +65,8 @@ class DiscreteHistogram:
       if threshold is None or self.data[key] > threshold:
         print("{}: {:d}".format(key, self.data[key]))
 
-    print("nones: {:d}".format(self.nones))
+    if self.nones >= 1:
+      print("nones: {:d}".format(self.nones))
 
   def empty(self):
     """
