@@ -1,6 +1,14 @@
 import cv2, os, subprocess
 
 def video_to_jpgs(video_path, save_path, do_resize=True, shorter_side=256):
+  """
+  Extract individual frames from a video.
+  :param video_path:          Path to the video file.
+  :param save_path:           Path to a directory where to save the video frames.
+  :param do_resize:           Resize the frames.
+  :param shorter_side:        If do_resize, shorter side will be resized to this value.
+  :return:                    True if extraction successful, otherwise false.
+  """
 
   cap = cv2.VideoCapture(video_path)
 
@@ -24,6 +32,11 @@ def video_to_jpgs(video_path, save_path, do_resize=True, shorter_side=256):
   return num_frames == num_images
 
 def video_has_sound(source):
+  """
+  Check if video contains sound.
+  :param source:      Path to the video file.
+  :return:            True if the video contains sound, otherwise false.
+  """
 
   # check if the video contains sound
   cmd1 = ["ffprobe", "-i", source, "-show_streams", "-select_streams", "a", "-loglevel", "error"]
@@ -45,6 +58,12 @@ def video_has_sound(source):
   return True
 
 def video_to_sound(source, target):
+  """
+  Extract the sound track from a video.
+  :param source:    Path to a video.
+  :param target:    Where to save the extracted sound file.
+  :return:          True if conversion succeeded, otherwise false.
+  """
 
   # convert video to sound
   cmd2 = ["ffmpeg", "-i", source, target]
@@ -57,6 +76,14 @@ def video_to_sound(source, target):
   return True
 
 def resize(frame, shorter_side=256):
+  """
+  Resize a frame using OpenCV.
+  :param frame:           A single video frame.
+  :param shorter_side:    Size of the target shorter side, longer side will be computed so that the aspect ratio
+                          is preserved.
+  :return:                Resized frame.
+  """
+
   if frame.shape[0] > frame.shape[1]:
     long = frame.shape[0]
     short = frame.shape[1]
