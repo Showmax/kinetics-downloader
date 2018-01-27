@@ -1,6 +1,6 @@
 import os
 
-DATASET_ROOT = "/root/assets/kinetics/download/dataset"
+DATASET_ROOT = "dataset"
 TRAIN_ROOT = os.path.join(DATASET_ROOT, "train")
 VALID_ROOT = os.path.join(DATASET_ROOT, "valid")
 TEST_ROOT = os.path.join(DATASET_ROOT, "test")
@@ -12,12 +12,6 @@ TEST_FRAMES_ROOT = os.path.join(DATASET_ROOT, "test_frames")
 TRAIN_SOUND_ROOT = os.path.join(DATASET_ROOT, "train_sound")
 VALID_SOUND_ROOT = os.path.join(DATASET_ROOT, "valid_sound")
 TEST_SOUND_ROOT = os.path.join(DATASET_ROOT, "test_sound")
-
-TRAIN_FLOW_ROOT = os.path.join(DATASET_ROOT, "train_flow")
-VALID_FLOW_ROOT = os.path.join(DATASET_ROOT, "valid_flow")
-
-TRAIN_FLOW_FLOWNET_CSS_FT_SD = os.path.join(TRAIN_FLOW_ROOT, "flownet_CSS_ft_sd")
-VALID_FLOW_FLOWNET_CSS_FT_SD = os.path.join(VALID_FLOW_ROOT, "flownet_CSS_ft_sd")
 
 CATEGORIES_PATH = "resources/categories.json"
 CLASSES_PATH = "resources/classes.json"

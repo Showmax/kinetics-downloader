@@ -141,7 +141,9 @@ def main(args):
     raise ValueError("Invalid format type.")
 
   # validate that training and validation sets contain the same classes
-  assert sorted(train_videos.keys()) == sorted(validation_videos.keys())
+  if not args.force:
+    if sorted(train_videos.keys()) != sorted(validation_videos.keys()):
+      raise ValueError("Training and validation videos do not contain the same classes.")
 
   # create datasets
   datasets = {}
@@ -188,6 +190,9 @@ parser.add_argument("format", help="{}, {} or {}".format(constants.FORMAT_VIDEOS
 
 parser.add_argument("-s", "--sets", type=int, nargs="+", default=[400], help="list of sets to generate, each integer "
                                                                              "denotes number of classes in the set")
+parser.add_argument("-f", "--force", default=False, action="store_true",
+                    help="create metadata even if training and validation sets do not contain the same classes")
+
 parser.add_argument("--save", default="resources/kinetics", help="save path")
 
 parsed = parser.parse_args()
