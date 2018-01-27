@@ -4,6 +4,8 @@ Download all videos from DeepMind's [Kinetics dataset](https://deepmind.com/rese
 Moreover, you can use this library to extract **frames** and **sound track** from videos, generate metadata for training
 and pack all sound tracks into a single **tfrecords** file for faster reading.
 
+[YouTube Terms of Service](https://www.youtube.com/static?template=terms)
+
 #### Requirements
 
 * Python >= 3.4
