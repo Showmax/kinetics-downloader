@@ -1,7 +1,5 @@
 import os, subprocess
 
-import lib.config as config
-
 def download_video(video_id, download_path, video_format="mp4", log_file=None):
   """
   Download video from YouTube.

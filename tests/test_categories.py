@@ -4,7 +4,8 @@ import lib.config as config
 
 class TestCategories(unittest.TestCase):
 
-  def extract_classes_from_categories(self):
+  @staticmethod
+  def extract_classes_from_categories():
 
     with open(config.CATEGORIES_PATH, "r") as file:
       categories = json.load(file)

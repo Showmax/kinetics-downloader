@@ -1,4 +1,4 @@
-import os, subprocess
+import os
 from multiprocessing import Process, Queue
 
 import lib.video as video
