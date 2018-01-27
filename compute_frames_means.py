@@ -6,13 +6,15 @@ import lib.utils as utils
 
 def main(args):
 
+  metadata = utils.load_json(args.train_metadata)
+
   r_avg = utils.StreamingAverage()
   g_avg = utils.StreamingAverage()
   b_avg = utils.StreamingAverage()
 
-  for video_id, cls in args.train_metadata.items():
+  for video_id, cls in metadata.items():
 
-    video_folder_path = os.path.join(config.TRAIN_FRAMES_ROOT, cls.replace(" ", "_"), video_id)
+    video_folder_path = os.path.join(config.TRAIN_FRAMES_ROOT, utils.class_name_to_dir_name(cls), video_id)
 
     frame_paths = [os.path.join(video_folder_path, frame_path) for frame_path in os.listdir(video_folder_path)]
 
@@ -35,10 +37,12 @@ def main(args):
   means = [r_avg.avg, g_avg.avg, b_avg.avg]
   np.save(args.save_path, means)
 
-parser = argparse.ArgumentParser("Compute means over a subset (most likely the training subset) of Kinetics.")
+if __name__ == "__main__":
 
-parser.add_argument("train_metadata", help="metadata containing all downloaded videos")
-parser.add_argument("save_path", help="where to save a numpy array containing R, G and B channel means")
+  parser = argparse.ArgumentParser("Compute per-channel means over the training subset of Kinetics.")
 
-parsed = parser.parse_args()
-main(parsed)
+  parser.add_argument("train_metadata", help="metadata containing all downloaded videos")
+  parser.add_argument("save_path", help="where to save a numpy array containing R, G and B channel means")
+
+  parsed = parser.parse_args()
+  main(parsed)
