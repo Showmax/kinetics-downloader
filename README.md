@@ -162,10 +162,10 @@ underscores (e.g. blowing glass => blowing_glass).
 
 * [Ondrej Biza](https://github.com/ondrejba)
 
-#### Acknowledgements
+## Acknowledgements
 
 The sound to tfrecords script is based on [this tutorial](http://warmspringwinds.github.io/tensorflow/tf-slim/2016/12/21/tfrecords-guide/).
 
-#### References
+## References
 
 * [[1] The Kinetics Human Action Video Dataset - W.Kay et al. (2017)](https://arxiv.org/abs/1705.06950)
