@@ -31,6 +31,25 @@ def int64_feature(value):
   """
   return tf.train.Feature(int64_list=tf.train.Int64List(value=[value]))
 
+def generate_example(file_path, length, audio_raw, cls_id):
+  """
+  Generate a Tensorflow Example.
+  :param file_path:     Path to an audio file.
+  :param length:        Length of the raw audio wave.
+  :param audio_raw:     Raw audio wave.
+  :param cls_id:        Class id of the video the audio wave belongs to.
+  :return:              A Tensorflow Example.
+  """
+
+  example = tf.train.Example(features=tf.train.Features(feature={
+    constants.TFRECORDS_KEY_PATH: bytes_feature(file_path.encode()),
+    constants.TFRECORDS_KEY_LENGTH: int64_feature(length),
+    constants.TFRECORDS_KEY_SOUND_RAW: bytes_feature(audio_raw),
+    constants.TFRECORDS_KEY_CLS_ID: int64_feature(cls_id)
+  }))
+
+  return example
+
 def convert_to_tfrecords(meta, classes, root, records_path, sampling_rate, class_dirs=True):
   """
   Pack sound files into a tfrecords file.
@@ -64,11 +83,7 @@ def convert_to_tfrecords(meta, classes, root, records_path, sampling_rate, class
 
     length = audio.shape[0]
 
-    example = tf.train.Example(features=tf.train.Features(feature={
-      "path": bytes_feature(file_path.encode()),
-      "length": int64_feature(length),
-      "sound_raw": bytes_feature(audio_raw),
-      "cls_id": int64_feature(cls_id)}))
+    example = generate_example(file_path, length, audio_raw, cls_id)
 
     writer.write(example.SerializeToString())
     i += 1
@@ -92,13 +107,16 @@ def main(args):
   convert_to_tfrecords(utils.load_json(args.meta_path), utils.load_json(args.classes_path), root, args.save_path,
                        args.sampling_rate, class_dirs=cls_dirs)
 
-parser = argparse.ArgumentParser("Pack all sound files into a single tfrecords (a Tensorflow file format).")
 
-parser.add_argument("subset", help="{}, {} or {}".format(constants.TRAIN, constants.VALID, constants.TEST))
-parser.add_argument("meta_path", help="metadata path")
-parser.add_argument("classes_path", help="classes path")
-parser.add_argument("save_path", help="tfrecords file save path")
-parser.add_argument("--sampling-rate", type=int, default=22050, help="sampling rate to convert all audios to")
+if __name__ == "__main__":
 
-parsed = parser.parse_args()
-main(parsed)
+  parser = argparse.ArgumentParser("Pack all sound files into a single tfrecords (a Tensorflow file format).")
+
+  parser.add_argument("subset", help="{}, {} or {}".format(constants.TRAIN, constants.VALID, constants.TEST))
+  parser.add_argument("meta_path", help="metadata path")
+  parser.add_argument("classes_path", help="classes path")
+  parser.add_argument("save_path", help="tfrecords file save path")
+  parser.add_argument("--sampling-rate", type=int, default=22050, help="sampling rate to convert all audios to")
+
+  parsed = parser.parse_args()
+  main(parsed)
