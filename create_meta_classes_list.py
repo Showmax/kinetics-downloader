@@ -57,7 +57,7 @@ def main(args):
   # maybe limit the number of training videos
   if args.max_training_videos is not None:
     for cls in classes:
-      set_train[cls] = set_train[cls][args.max_training_videos]
+      set_train[cls] = set_train[cls][:args.max_training_videos]
 
   if args.validation_from_training:
 
@@ -94,10 +94,10 @@ def main(args):
   }
 
   # save dataset
-  train_path = "{:s}_train.json".format(args.save, num_classes)
-  val_path = "{:s}_val.json".format(args.save, num_classes)
-  test_path = "{:s}_test.json".format(args.save, num_classes)
-  classes_path = "{:s}_classes.json".format(args.save, num_classes)
+  train_path = "{:s}_train.json".format(args.save_path, num_classes)
+  val_path = "{:s}_val.json".format(args.save_path, num_classes)
+  test_path = "{:s}_test.json".format(args.save_path, num_classes)
+  classes_path = "{:s}_classes.json".format(args.save_path, num_classes)
 
   utils.save_json(train_path, dataset["train"])
   utils.save_json(val_path, dataset["valid"])
