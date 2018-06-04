@@ -79,6 +79,10 @@ def main(args):
     set_valid = {cls: videos for cls, videos in validation_videos.items() if cls in classes}
     set_test = test_videos
 
+  if args.max_testing_videos is not None:
+    for cls in classes:
+      set_test[cls] = set_test[cls][:args.max_testing_videos]
+
   set_train = metadata.class_keys_to_video_id_keys(set_train)
   set_valid = metadata.class_keys_to_video_id_keys(set_valid)
   set_test = metadata.class_keys_to_video_id_keys(set_test)
@@ -114,7 +118,10 @@ if __name__ == "__main__":
   parser.add_argument("classes", help="path to a JSON list of classes to include")
   parser.add_argument("save_path", help="where to save the metadata")
 
-  parser.add_argument("--max-training-videos", default=None, type=int, help="maximum number of training videos")
+  parser.add_argument("--max-training-videos", default=None, type=int,
+                      help="maximum number of training videos per class")
+  parser.add_argument("--max-testing-videos", default=None, type=int,
+                      help="maximum number of testing videos per class")
   parser.add_argument("--validation-from-training", default=False, action="store_true",
                       help="create the validation set from the training set")
   parser.add_argument("--validation-from-training-fraction", type=float,
