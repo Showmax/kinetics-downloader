@@ -14,7 +14,7 @@ def download_video(video_id, download_path, video_format="mp4", log_file=None):
     stderr = subprocess.DEVNULL
   else:
     stderr = open(log_file, "a")
-
+  print(video_id)
   return_code = subprocess.call(
     ["youtube-dl", "https://youtube.com/watch?v={}".format(video_id), "--quiet", "-f",
      "bestvideo[ext={}]+bestaudio/best".format(video_format), "--output", download_path, "--no-continue"], stderr=stderr)
@@ -76,6 +76,7 @@ def process_video(video_id, directory, start, end, video_format="mp4", compress=
     if overwrite:
       os.remove(slice_path)
     else:
+      print('Exists skipping {}'.format(video_id))
       return True
 
   # sometimes videos are downloaded as mkv
