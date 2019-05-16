@@ -1,0 +1,22 @@
+{
+	"activity_net": {
+		"json": "/Volumes/Extreme SSD/Dancelogue/DATASETS/Activity Net/activity_net.v1-3.min.json",
+		"data": "/Volumes/Extreme SSD/Dancelogue/DATASETS/Activity Net"
+	},
+	"kinetics": {
+    "default": 600,
+    "categories": "/Volumes/Extreme SSD/Dancelogue/DATASETS/Kinetics/categories.json",
+    "classes": "/Volumes/Extreme SSD/Dancelogue/DATASETS/Kinetics/classes.json",
+		"600": {
+			"json": "/Volumes/Extreme SSD/Dancelogue/DATASETS/Kinetics/600",
+			"data": "/Volumes/Extreme SSD/Dancelogue/DATASETS/Kinetics/"
+		},
+		"400": {
+			"json": "/Volumes/Extreme SSD/Dancelogue/DATASETS/Kinetics/400",
+			"data": "/Volumes/Extreme SSD/Dancelogue/DATASETS/Kinetics/"
+		}
+	},
+	"lets_dance": {
+		"data": "/Volumes/Extreme SSD/Dancelogue/DATASETS/Lets Dance"
+	}
+}
