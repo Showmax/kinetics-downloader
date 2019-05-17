@@ -30,6 +30,7 @@
 	},
 
 	"lets_dance": {
-		"data": "/Volumes/Extreme SSD/Dancelogue/DATASETS/Lets Dance"
+		"rgb_data": "/Volumes/Extreme SSD/Dancelogue/DATASETS/Lets Dance/rgb",
+    "meta": "/Volumes/Extreme SSD/Dancelogue/DATASETS/Lets Dance/meta.txt"
 	}
 }
