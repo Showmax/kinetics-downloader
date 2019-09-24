@@ -1,19 +1,23 @@
 # Download DeepMind's Kinetics
 
-Download all videos from DeepMind's [Kinetics dataset](https://deepmind.com/research/open-source/open-source-datasets/kinetics/).
+Download all videos from DeepMind's [Kinetics-700 dataset](https://deepmind.com/research/open-source/open-source-datasets/kinetics/).
 Moreover, you can use this library to extract **frames** and **sound track** from videos, generate metadata for training
 and pack all sound tracks into a single **tfrecords** file for faster reading.
 
-## Requirements
+Another Kinetics downloader can be found in the [ActivityNet repository](https://github.com/activitynet/ActivityNet/tree/master/Crawler/Kinetics).
 
-* Python >= 3.4
-* youtube-dl
-* ffmpeg
-* gzip
-
-Required Python packages are listed in **requirements.txt**.
 
 ## Usage
+
+We package up the app and all its requirements in a self-contained Docker image. Use
+
+    make
+
+to build the docker image and
+
+    make run datadir=/tmp
+
+to run the container and mount the host's `/tmp` directory at `/data` inside the container.
 
 **WARNING:** Before you start any download from YouTube, please be sure, that you have checked [YouTube Terms Of Service](https://www.youtube.com/static?template=terms) and you are compliant. Especially check section 5.H.
 
@@ -161,6 +165,7 @@ underscores (e.g. blowing glass => blowing_glass).
 ## Contributors
 
 * [Ondrej Biza](https://github.com/ondrejba)
+* [Daniel J H](https://github.com/daniel-j-h)
 
 ## Acknowledgements
 
@@ -169,3 +174,4 @@ The sound to tfrecords script is based on [this tutorial](http://warmspringwinds
 ## References
 
 * [[1] The Kinetics Human Action Video Dataset - W.Kay et al. (2017)](https://arxiv.org/abs/1705.06950)
+* [[2] A Short Note on the Kinetics-700 Human Action Dataset - Joao Carreira et al. (2019)](https://arxiv.org/abs/1907.06987)
