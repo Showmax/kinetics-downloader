@@ -15,20 +15,22 @@ def download_video(video_id, download_path, video_format="mp4", log_file=None):
   else:
     stderr = open(log_file, "a")
   try:
-    subprocess.check_call(
-      [
+    print("Downloading = {}".format(video_id))
+    subprocess.check_output(
+      " ".join([
         "youtube-dl",
         "https://youtube.com/watch?v={}".format(video_id),
-        # "--quiet",
         "-f", "bestvideo[ext={}]+bestaudio/best".format(video_format),
-        "--output", download_path,
+        "--output", "'{}'".format(download_path),
         "--no-continue"
-      ]
+      ]),
+      stderr=subprocess.STDOUT,
+      shell=True
     )
-    print("{} = Succeeded".format(video_id))
+    success = True
 
   except Exception as e:
-    print("{} = Failed with {}".format(video_id, e))
+    print("\n {} Failed with error \n {}".format(video_id, e.stdout))
     success = False
 
   if log_file is not None:

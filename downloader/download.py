@@ -83,8 +83,8 @@ def download_classes_from_file(classes_file, num_workers, failed_save_file, comp
   with open(config.SUB_CLASS_PATH) as c_file:
       classes_data = json.load(c_file)
 
-  for list_path, save_root in tqdm(zip([config.TRAIN_METADATA_PATH, config.VAL_METADATA_PATH],
-                                        [config.TRAIN_ROOT, config.VALID_ROOT])):
+  for list_path, save_root in tqdm(zip([config.VAL_METADATA_PATH, config.TRAIN_METADATA_PATH],
+                                        [config.VALID_ROOT, config.TRAIN_ROOT])):
     with open(list_path) as file:
       data = json.load(file)
 
