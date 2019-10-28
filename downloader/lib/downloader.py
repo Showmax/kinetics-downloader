@@ -10,6 +10,8 @@ def download_video(video_id, download_path, video_format="mp4", log_file=None):
   :return:                Tuple: path to the downloaded video and a bool indicating success.
   """
 
+  error = None
+
   if log_file is None:
     stderr = subprocess.DEVNULL
   else:
@@ -32,11 +34,12 @@ def download_video(video_id, download_path, video_format="mp4", log_file=None):
   except Exception as e:
     print("\n {} Failed with error \n {}".format(video_id, e.stdout))
     success = False
+    error = e.stdout
 
   if log_file is not None:
     stderr.close()
 
-  return success
+  return success, error
 
 def cut_video(raw_video_path, slice_path, start, end):
   """
@@ -90,15 +93,15 @@ def process_video(video_id, directory, start, end, video_format="mp4", compress=
       os.remove(slice_path)
     else:
       print('Exists skipping {}'.format(video_id))
-      return True
+      return True, None
 
   # sometimes videos are downloaded as mkv
   if not os.path.isfile(mkv_download_path):
     # download video and cut out the section of interest
-    success = download_video(video_id, download_path, log_file=log_file)
+    success, error = download_video(video_id, download_path, log_file=log_file)
 
     if not success:
-      return False
+      return False, error
 
   # video was downloaded as mkv instead of mp4
   if not os.path.isfile(download_path) and os.path.isfile(mkv_download_path):
@@ -107,7 +110,7 @@ def process_video(video_id, directory, start, end, video_format="mp4", compress=
   success = cut_video(download_path, slice_path, start, end)
 
   if not success:
-    return False
+    return False, None
 
   # remove the downloaded video
   os.remove(download_path)
@@ -116,7 +119,7 @@ def process_video(video_id, directory, start, end, video_format="mp4", compress=
     # compress the video slice
     return compress_video(slice_path)
 
-  return True
+  return True, None
 
 def download_class_sequential(class_name, videos_dict, directory, compress=False, log_file=None):
   """
@@ -147,8 +150,9 @@ def download_class_sequential(class_name, videos_dict, directory, compress=False
       start = annotations["segment"][0]
       end = annotations["segment"][1]
 
-      if not process_video(key, class_dir, start, end, compress=compress, log_file=log_file):
-        failed_videos.append(key)
+      success, error = process_video(key, class_dir, start, end, compress=compress, log_file=log_file)
+      if not success:
+        failed_videos.append({"key": key, "error": error})
 
   return failed_videos
 

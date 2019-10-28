@@ -1,4 +1,5 @@
 import os
+import csv
 from multiprocessing import Process, Queue
 
 import lib.downloader as downloader
@@ -111,15 +112,20 @@ def video_worker(videos_queue, failed_queue, compress, log_file):
   """
 
   while True:
-    request = videos_queue.get()
+    try:
+      request = videos_queue.get(timeout=60*5) # Timeout after 5 minutes
 
-    if request is None:
-      break
+      if request is None:
+        break
 
-    video_id, directory, start, end = request
+      video_id, directory, start, end = request
+      success, error = downloader.process_video(video_id, directory, start, end, compress=compress, log_file=log_file)
+      if not success:
+        failed_queue.put({ video_id: error })
 
-    if not downloader.process_video(video_id, directory, start, end, compress=compress, log_file=log_file):
-      failed_queue.put(video_id)
+    except Exception as e:
+      failed_queue.put({ video_id: str(e) })
+    
 
 def write_failed_worker(failed_queue, failed_save_file):
   """
@@ -128,15 +134,14 @@ def write_failed_worker(failed_queue, failed_save_file):
   :param failed_save_file:    Where to save the videos.
   :return:                    None.
   """
-
-  file = open(failed_save_file, "a")
-
+  
   while True:
-    video_id = failed_queue.get()
+    error_dict = failed_queue.get()
 
-    if video_id is None:
+    if error_dict is None:
       break
 
-    file.write("{}\n".format(video_id))
-
-  file.close()
+    with open(failed_save_file, "a") as csv_file:
+      writer = csv.writer(csv_file)
+      for key, value in error_dict.items():
+        writer.writerow([key, value])

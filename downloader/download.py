@@ -205,7 +205,7 @@ if __name__ == "__main__":
   parser.add_argument("--test", action="store_true", help="download the test set")
 
   parser.add_argument("--num-workers", type=int, default=8, help="number of downloader processes")
-  parser.add_argument("--failed-log", default="dataset/failed.txt", help="where to save list of failed videos")
+  parser.add_argument("--failed-log", default="failed.csv", help="where to save list of failed videos")
   parser.add_argument("--compress", default=False, action="store_true", help="compress videos using gzip (not recommended)")
   parser.add_argument("-v", "--verbose", default=True, action="store_true", help="print additional info")
   parser.add_argument("-s", "--skip", default=False, action="store_true", help="skip classes that already have folders")
