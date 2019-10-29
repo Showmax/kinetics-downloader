@@ -24,9 +24,10 @@ def download_video(video_id, download_path, video_format="mp4", log_file=None):
       " ".join([
         "youtube-dl",
         "https://youtube.com/watch?v={}".format(video_id),
-        "-f", "bestvideo[ext={}]+bestaudio/best".format(video_format),
+        "-f", "'bestvideo[ext={},height<=360]/best'".format(video_format),
         "--output", "'{}'".format(download_path),
-        "--no-continue"
+        "--no-continue",
+        "--verbose"
       ]),
       stderr=subprocess.STDOUT,
       shell=True
