@@ -1,5 +1,6 @@
 # Python
 import sys
+import multiprocessing
 
 # Django
 from django.conf import settings
@@ -10,7 +11,8 @@ import download
 
 
 def download_data(data, save_root, failed_path):
+  print('starting with {} workers'.format(multiprocessing.cpu_count() + 1))
   download.download_missing(
-    data, save_root, 8, failed_path,
+    data, save_root, multiprocessing.cpu_count() + 1, failed_path,
     None, None, None, None
   )
