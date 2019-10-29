@@ -30,9 +30,8 @@ class Command(BaseCommand):
           with path.open(mode='r') as f:
             data = json.load(f)
 
-          download_path = settings.WORK_DIR / 'youtube-videos'/  subset
+          download_path = settings.ROOT_DIR.parent / 'downloads' /  subset
           download_path.mkdir(parents=True, exist_ok=True)
 
-          failed_path = settings.WORK_DIR / 'youtube-videos' / 'failed.csv'
+          failed_path = settings.ROOT_DIR.parent / 'downloads' / 'failed.csv'
           download_data(data, download_path, failed_path)
-
