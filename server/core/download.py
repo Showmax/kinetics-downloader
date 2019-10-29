@@ -11,8 +11,9 @@ import download
 
 
 def download_data(data, save_root, failed_path):
-  print('starting with {} workers'.format(multiprocessing.cpu_count() + 1))
+  num_workers = (multiprocessing.cpu_count() * 2) + 1
+  print('starting with {} workers'.format(num_workers)
   download.download_missing(
-    data, save_root, multiprocessing.cpu_count() + 1, failed_path,
+    data, save_root, num_workers, failed_path,
     None, None, None, None
   )
