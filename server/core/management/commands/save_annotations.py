@@ -55,19 +55,19 @@ class Command(BaseCommand):
         print("Total Downloaded: ", len(data.keys()))
 
         with DOWNLOAD_PATH.open(mode='w') as f:
-            json.dump(data, f, indent=2)
+            json.dump(data, f)
 
     def load_and_save(self):
         data = defaultdict(dict)
 
         for path in [TRAIN_METADATA_PATH, VAL_METADATA_PATH]:
             with path.open(mode='r') as f:
-                annotations = json.load(f),
+                annotations = json.load(f)
             for key, value in tqdm.tqdm(annotations.items()):
                 data[key].update(value)
 
         with ALL_PATH.open(mode='w') as f:
-            json.dump(data, f, indent=2)
+            json.dump(data, f)
 
         print("Total All", len(data.keys()))
 
@@ -99,7 +99,7 @@ class Command(BaseCommand):
         print(keys_diff, diff_keys, " difference", keys_diff - diff_keys)
 
         with MISSING_PATH.open(mode='w') as f:
-            json.dump(diff, f, indent=2)
+            json.dump(diff, f)
 
     def save_to_folders(self):
         """
@@ -121,7 +121,7 @@ class Command(BaseCommand):
 
                 summary[key][subset] = len(data.keys())
                 with (label_path / 'missing.json').open(mode='w') as f:
-                    json.dump(data, f, indent=2)
+                    json.dump(data, f)
 
         print(summary)
 
