@@ -67,6 +67,16 @@ def download_classes(classes, num_workers, failed_save_file, compress, verbose, 
     pool.feed_videos()
     pool.stop_workers()
 
+def download_missing(data, save_root, num_workers, failed_save_file, compress, verbose, skip, log_file):
+  print('DOWNLOADING {} of {}'.format(len(data.keys()), save_root))
+  pool = parallel.Pool(
+    None, data, save_root, num_workers, failed_save_file,
+    compress, verbose, skip, log_file=log_file
+  )
+  pool.start_workers()
+  pool.feed_videos()
+  pool.stop_workers()
+
 def download_classes_from_file(classes_file, num_workers, failed_save_file, compress, verbose, skip, log_file):
   """
   Download all videos of the provided classes.

@@ -123,5 +123,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-RESOURCES_DIR = Path(BASE_DIR).parent / 'resources'
-WORK_DIR = Path(BASE_DIR).parent / 'work_dir'
+ROOT_DIR = Path(BASE_DIR).parent
+RESOURCES_DIR = ROOT_DIR / 'resources'
+WORK_DIR = ROOT_DIR / 'work_dir'
+DOWNLOADER_DIR = ROOT_DIR / 'downloader'

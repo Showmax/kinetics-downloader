@@ -1,4 +1,6 @@
 import os, subprocess
+from pathlib import Path
+
 
 def download_video(video_id, download_path, video_format="mp4", log_file=None):
   """
@@ -152,6 +154,8 @@ def download_class_sequential(class_name, videos_dict, directory, compress=False
 
       success, error = process_video(key, class_dir, start, end, compress=compress, log_file=log_file)
       if not success:
+        if 'HTTP Error 429' in error:
+          raise Exception('Exceeded API Limit, no point in continuing')
         failed_videos.append({"key": key, "error": error})
 
   return failed_videos
