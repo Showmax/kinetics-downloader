@@ -30,8 +30,8 @@ class Command(BaseCommand):
           with path.open(mode='r') as f:
             data = json.load(f)
 
-          download_path = settings.ROOT_DIR.parent / 'downloads' /  subset
+          download_path = settings.ROOT_DIR.parent / 'downloads' / options['path'].stem
           download_path.mkdir(parents=True, exist_ok=True)
 
-          failed_path = settings.ROOT_DIR.parent / 'downloads' / 'failed.csv'
-          download_data(data, download_path, failed_path)
+          failed_path = download_path / 'failed.csv'
+          download_data(data, download_path / subset, failed_path)
