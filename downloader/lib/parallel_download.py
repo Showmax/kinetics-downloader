@@ -124,8 +124,8 @@ def video_worker(videos_queue, failed_queue, compress, log_file, failed_log_file
         failed_ids.append(row[0])
 
   # keep_going = True
-  cumulative_time = 0
-  avg = 0
+  elapsed = 0
+  i = 0
   while True:
     try:
       request = videos_queue.get(timeout=60*5) # Timeout after 5 minutes
@@ -139,13 +139,25 @@ def video_worker(videos_queue, failed_queue, compress, log_file, failed_log_file
         print('Skipping {} as previously failed'.format(video_id))
         continue
 
+      slice_path = "{}.mp4".format(os.path.join(directory, video_id))
+      if os.path.isfile(slice_path):
+        print('Exists skipping {}'.format(video_id))
+        continue
+
       start_time = time.time()
       success, error = downloader.process_video(video_id, directory, start, end, compress=compress, log_file=log_file)
       duration = round(time.time() - start_time, 1)
-      cumulative_time += duration
+      elapsed += duration
 
-      print("Completed {} in {}s, elapsed time={}s, average={}s".format(video_id, duration, cumulative_time, ((avg + duration) / 2)))
+      print("Completed {video_id} in {duration}s, elapsed time={elapsed}s, avg={avg}s, iteration={i}".format(
+        video_id=video_id,
+        duration=duration,
+        elapsed=round(elapsed, 1),
+        avg=round(elapsed / (i + 1), 1),
+        i=i)
+      )
 
+      i += 1
       if not success:
         if error and 'HTTP Error 429' in str(error):
           print('Exceeded API Limit, no point in continuing')
