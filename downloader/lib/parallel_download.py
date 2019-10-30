@@ -126,6 +126,7 @@ def video_worker(videos_queue, failed_queue, compress, log_file, failed_log_file
   # keep_going = True
   elapsed = 0
   i = 0
+  s = 0
   while True:
     try:
       request = videos_queue.get(timeout=60*5) # Timeout after 5 minutes
@@ -134,6 +135,7 @@ def video_worker(videos_queue, failed_queue, compress, log_file, failed_log_file
         break
 
       video_id, directory, start, end = request
+      s += 1
 
       if video_id in failed_ids:
         print('Skipping {} as previously failed'.format(video_id))
@@ -149,12 +151,13 @@ def video_worker(videos_queue, failed_queue, compress, log_file, failed_log_file
       duration = round(time.time() - start_time, 1)
       elapsed += duration
 
-      print("Completed {video_id} in {duration}s, elapsed time={elapsed}s, avg={avg}s, iteration={i}".format(
+      print("Completed {video_id} in {duration}s, elapsed time={elapsed}s, avg={avg}s, iteration={i}, iteration+skipped={s}".format(
         video_id=video_id,
         duration=duration,
         elapsed=round(elapsed, 1),
         avg=round(elapsed / (i + 1), 1),
-        i=i)
+        i=i,
+        s=s)
       )
 
       i += 1
