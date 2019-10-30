@@ -26,8 +26,7 @@ def download_video(video_id, download_path, video_format="mp4", log_file=None):
         "https://youtube.com/watch?v={}".format(video_id),
         "-f", "'bestvideo[ext={},height<=360]/best'".format(video_format),
         "--output", "'{}'".format(download_path),
-        "--no-continue",
-        "--verbose"
+        "--no-continue"
       ]),
       stderr=subprocess.STDOUT,
       shell=True
