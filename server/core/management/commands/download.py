@@ -5,6 +5,7 @@ import shutil
 from pathlib import Path
 from collections import defaultdict
 import csv
+import time
 
 # Django
 from django.core.management.base import BaseCommand
@@ -25,13 +26,16 @@ class Command(BaseCommand):
       parser.add_argument('path', type=Path, help='folder of the path to download')
 
     def handle(self, *args, **options):
-        for subset in ['train', 'val']:
+        for subset in ['train']:
           path = options['path'] / subset / 'missing.json'
           with path.open(mode='r') as f:
             data = json.load(f)
 
-          download_path = settings.ROOT_DIR.parent / 'downloads' / options['path'].stem
+          download_path = settings.ROOT_DIR.parent / 'downloads' / subset / options['path'].stem
           download_path.mkdir(parents=True, exist_ok=True)
 
-          failed_path = download_path / 'failed.csv'
-          download_data(data, download_path / subset, failed_path)
+          failed_path = download_path.parent / 'failed.csv'
+
+          start_time = time.time()
+          download_data(data, download_path, failed_path)
+          print("FINISHED IN {}".format(time.time() - start_time))

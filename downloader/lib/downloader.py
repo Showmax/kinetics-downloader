@@ -1,5 +1,6 @@
 import os, subprocess
 from pathlib import Path
+import time
 
 
 def download_video(video_id, download_path, video_format="mp4", log_file=None):
@@ -19,7 +20,7 @@ def download_video(video_id, download_path, video_format="mp4", log_file=None):
   else:
     stderr = open(log_file, "a")
   try:
-    print("Downloading = {}".format(video_id))
+    # print("Downloading = {}".format(video_id))
     subprocess.check_output(
       " ".join([
         "youtube-dl",

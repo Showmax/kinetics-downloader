@@ -2,6 +2,7 @@ import os
 import csv
 from multiprocessing import Process, Queue
 from pathlib import Path
+import time
 
 
 import lib.downloader as downloader
@@ -123,6 +124,8 @@ def video_worker(videos_queue, failed_queue, compress, log_file, failed_log_file
         failed_ids.append(row[0])
 
   # keep_going = True
+  cumulative_time = 0
+  avg = 0
   while True:
     try:
       request = videos_queue.get(timeout=60*5) # Timeout after 5 minutes
@@ -136,7 +139,13 @@ def video_worker(videos_queue, failed_queue, compress, log_file, failed_log_file
         print('Skipping {} as previously failed'.format(video_id))
         continue
 
+      start_time = time.time()
       success, error = downloader.process_video(video_id, directory, start, end, compress=compress, log_file=log_file)
+      duration = round(time.time() - start_time, 1)
+      cumulative_time += duration
+
+      print("Completed {} in {}s, elapsed time={}s, average={}s".format(video_id, duration, cumulative_time, ((avg + duration) / 2)))
+
       if not success:
         if error and 'HTTP Error 429' in str(error):
           print('Exceeded API Limit, no point in continuing')
