@@ -34,8 +34,9 @@ class Command(BaseCommand):
           download_path = settings.ROOT_DIR.parent / 'downloads' / subset / options['path'].stem
           download_path.mkdir(parents=True, exist_ok=True)
 
-          failed_path = download_path.parent / 'failed.csv'
+          failed_path = download_path.parent / '{}-failed.csv'.format(time.time())
+          stats_path = download_path.parent / '{}-stats.csv'.format(time.time())
 
           start_time = time.time()
-          download_data(data, download_path, failed_path)
+          download_data(data, download_path, failed_path, stats_path)
           print("FINISHED IN {}".format(time.time() - start_time))

@@ -96,33 +96,40 @@ def process_video(video_id, directory, start, end, video_format="mp4", compress=
       os.remove(slice_path)
     else:
       print('Exists skipping {}'.format(video_id))
-      return True, None
+      return {'success': True, 'video_id': video_id, 'status': 'Exists'}
 
   # sometimes videos are downloaded as mkv
   if not os.path.isfile(mkv_download_path):
     # download video and cut out the section of interest
+
+    download_start_time = time.time()
     success, error = download_video(video_id, download_path, log_file=log_file)
+    download_duration = time.time() - download_start_time
 
     if not success:
-      return False, error
+      return {'success': False, 'video_id': video_id, 'error': str(error)}
 
   # video was downloaded as mkv instead of mp4
   if not os.path.isfile(download_path) and os.path.isfile(mkv_download_path):
     download_path = mkv_download_path
 
+  ffmpeg_start_time = time.time()
   success = cut_video(download_path, slice_path, start, end)
+  ffmpeg_duration = time.time() - ffmpeg_start_time
 
   if not success:
-    return False, None
+    return {'success': False, 'video_id': video_id, 'error': 'Cutting the video failed'}
 
   # remove the downloaded video
   os.remove(download_path)
 
-  if compress:
-    # compress the video slice
-    return compress_video(slice_path)
-
-  return True, None
+  return {
+    'success': True,
+    'video_id': video_id,
+    'status': 'Completed',
+    'download_duration': round(download_duration, 1),
+    'ffmpeg_duration': round(ffmpeg_duration, 1)
+  }
 
 def download_class_sequential(class_name, videos_dict, directory, compress=False, log_file=None):
   """

@@ -1,6 +1,7 @@
 import argparse, json, os
 from pathlib import Path
 from collections import defaultdict
+import time
 
 import lib.config as config
 import lib.parallel_download as parallel
@@ -67,17 +68,18 @@ def download_classes(classes, num_workers, failed_save_file, compress, verbose, 
     pool.feed_videos()
     pool.stop_workers()
 
-def download_missing(data, save_root, num_workers, failed_save_file, compress, verbose, skip, log_file):
+def download_missing(data, save_root, num_workers, failed_save_file, compress, verbose, skip, log_file, stats_file=None):
   print('DOWNLOADING {} of {}'.format(len(data.keys()), save_root))
   pool = parallel.Pool(
     None, data, save_root, num_workers, failed_save_file,
-    compress, verbose, skip, log_file=log_file
+    compress, verbose, skip, log_file=log_file, stats_file=stats_file
   )
+
   pool.start_workers()
   pool.feed_videos()
   pool.stop_workers()
 
-def download_classes_from_file(classes_file, num_workers, failed_save_file, compress, verbose, skip, log_file):
+def download_classes_from_file(classes_file, num_workers, failed_save_file, compress, verbose, skip, log_file, stats_file=None):
   """
   Download all videos of the provided classes.
   :param classes:               List of classes to download.
@@ -101,8 +103,11 @@ def download_classes_from_file(classes_file, num_workers, failed_save_file, comp
     filtered = {k:v for (k,v) in data.items() if v['annotations']['label'] in classes_data}
 
     print('DOWNLOADING {} of {}'.format(len(filtered), save_root))
-    pool = parallel.Pool(classes_data, filtered, save_root, num_workers, failed_save_file, compress, verbose, skip,
-                         log_file=log_file)
+    pool = parallel.Pool(
+      classes_data, filtered, save_root, num_workers,
+      failed_save_file, compress, verbose, skip,
+      log_file=log_file, stats_file=stats_file)
+
     pool.start_workers()
     pool.feed_videos()
     pool.stop_workers()
@@ -195,8 +200,14 @@ def main(args):
 
     if args.classes_file:
       # download selected classes from file
-      download_classes_from_file(args.classes_file, args.num_workers, args.failed_log, args.compress, args.verbose, args.skip,
-                       args.log_file)
+      stats_file = '{}-stats.csv'.format(time.time())
+      failed_log = '{}-failed.csv'.format(time.time())
+
+      download_classes_from_file(
+        args.classes_file, args.num_workers, failed_log,
+        args.compress, args.verbose, args.skip, args.log_file,
+        stats_file
+      )
 
     if args.test:
       # download the test set
