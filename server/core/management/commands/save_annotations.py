@@ -114,7 +114,7 @@ class Command(BaseCommand):
         for key, value in missing.items():
             to_download[value.get('annotations').get('label')][value.get('subset')].update({ key: value })
 
-        for key, value in to_download.items():
+        for key, value in tqdm.tqdm(to_download.items()):
             for subset, data in value.items():
                 label_path = TO_DOWNLOAD_FOLDER_PATH / key / subset
                 label_path.mkdir(parents=True, exist_ok=True)
@@ -122,8 +122,6 @@ class Command(BaseCommand):
                 summary[key][subset] = len(data.keys())
                 with (label_path / 'missing.json').open(mode='w') as f:
                     json.dump(data, f)
-
-        print(summary)
 
         with MISSING_SUMMARY_PATH.open(mode="w") as csv_file:
             writer = csv.writer(csv_file)
@@ -134,8 +132,8 @@ class Command(BaseCommand):
                 writer.writerow(row)
 
     def handle(self, *args, **options):
-        # self.save_downloaded()
-        # self.load_and_save()
-        # self.get_diff()
+        self.save_downloaded()
+        self.load_and_save()
+        self.get_diff()
         self.save_to_folders()
 
