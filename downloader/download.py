@@ -201,10 +201,9 @@ def main(args):
     if args.classes_file:
       # download selected classes from file
       stats_file = '{}-stats.csv'.format(time.time())
-      failed_log = '{}-failed.csv'.format(time.time())
 
       download_classes_from_file(
-        args.classes_file, args.num_workers, failed_log,
+        args.classes_file, args.num_workers, args.failed_log,
         args.compress, args.verbose, args.skip, args.log_file,
         stats_file
       )
