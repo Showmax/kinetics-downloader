@@ -12,3 +12,5 @@ RUN pip install -r requirements.txt
 # Python server requirements
 COPY server/requirements.txt .server-requirements.txt
 RUN pip install -r .server-requirements.txt
+
+WORKDIR /

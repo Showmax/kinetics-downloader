@@ -21,14 +21,17 @@ def download_video(video_id, download_path, video_format="mp4", log_file=None):
     stderr = open(log_file, "a")
   try:
     # print("Downloading = {}".format(video_id))
+    process_command = " ".join([
+      "youtube-dl",
+      "https://youtube.com/watch?v={}".format(video_id),
+      "-f", '"bestvideo[ext={},height<=360]/best"'.format(video_format),
+      "--output", "{}".format(download_path),
+      "--no-continue"
+    ])
+
+    # print(process_command)
     subprocess.check_output(
-      " ".join([
-        "youtube-dl",
-        "https://youtube.com/watch?v={}".format(video_id),
-        "-f", "'bestvideo[ext={},height<=360]/best'".format(video_format),
-        "--output", "'{}'".format(download_path),
-        "--no-continue"
-      ]),
+      process_command,
       stderr=subprocess.STDOUT,
       shell=True
     )

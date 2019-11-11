@@ -7,6 +7,8 @@ import time
 
 import lib.downloader as downloader
 
+csv.field_size_limit(131072 * 100)
+
 class Pool:
   """
   A pool of video downloaders.
