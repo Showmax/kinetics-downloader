@@ -126,9 +126,9 @@ class Command(BaseCommand):
         with MISSING_SUMMARY_PATH.open(mode="w") as csv_file:
             writer = csv.writer(csv_file)
             writer.writerow(['label', 'train', 'val'])
-            
+
             rows = [[key, value.get('train'), value.get('val')] for key, value in summary.items()]
-            for row in sorted(rows, key=lambda x: x[1], reverse=True):
+            for row in sorted(rows, key=lambda x: x[0], reverse=True):
                 writer.writerow(row)
 
     def handle(self, *args, **options):
@@ -136,4 +136,3 @@ class Command(BaseCommand):
         self.load_and_save()
         self.get_diff()
         self.save_to_folders()
-
