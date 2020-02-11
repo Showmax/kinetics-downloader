@@ -20,7 +20,7 @@ CLASSES_PATH = "resources/classes.json"
 
 TRAIN_METADATA_PATH = "resources/700/train/kinetics_700_train.json"
 VAL_METADATA_PATH = "resources/700/val/kinetics_700_val.json"
-TEST_METADATA_PATH = "resources/700/json/kinetics_test.json"
+TEST_METADATA_PATH = "resources/700/test/kinetics_700_test.json"
 
 SUB_CLASS_PATH = "resources/700/categories.json"
 print(Path(__file__).resolve())

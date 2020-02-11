@@ -56,7 +56,7 @@ class Pool:
     Feed video ids into the download queue.
     :return:    None.
     """
-
+    print('feed_videos')
     if self.classes is None:
       downloader.download_class_parallel(None, self.videos_dict, self.directory, self.videos_queue)
     else:

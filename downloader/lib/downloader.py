@@ -196,9 +196,8 @@ def download_class_parallel(class_name, videos_dict, directory, videos_queue):
   for key in videos_dict.keys():
     metadata = videos_dict[key]
     annotations = metadata["annotations"]
+    # if class_name is None or annotations["label"].lower() == class_name.lower():
+    start = annotations["segment"][0]
+    end = annotations["segment"][1]
 
-    if class_name is None or annotations["label"].lower() == class_name.lower():
-      start = annotations["segment"][0]
-      end = annotations["segment"][1]
-
-      videos_queue.put((key, class_dir, start, end))
+    videos_queue.put((key, class_dir, start, end))

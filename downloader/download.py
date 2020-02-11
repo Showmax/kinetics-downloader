@@ -57,8 +57,7 @@ def download_classes(classes, num_workers, failed_save_file, compress, verbose, 
   :return:                      None.
   """
 
-  for list_path, save_root in tqdm(zip([config.TRAIN_METADATA_PATH, config.VAL_METADATA_PATH],
-                                        [config.TRAIN_ROOT, config.VALID_ROOT])):
+  for list_path, save_root in tqdm(zip([config.TEST_METADATA_PATH], [config.TEST_ROOT])):
     with open(list_path) as file:
       data = json.load(file)
 
@@ -95,16 +94,15 @@ def download_classes_from_file(classes_file, num_workers, failed_save_file, comp
   with open(config.SUB_CLASS_PATH) as c_file:
       classes_data = json.load(c_file)
 
-  for list_path, save_root in tqdm(zip([config.VAL_METADATA_PATH, config.TRAIN_METADATA_PATH],
-                                        [config.VALID_ROOT, config.TRAIN_ROOT])):
+  for list_path, save_root in tqdm(zip([config.TEST_METADATA_PATH], [config.TEST_ROOT])):
     with open(list_path) as file:
       data = json.load(file)
 
-    filtered = {k:v for (k,v) in data.items() if v['annotations']['label'] in classes_data}
-
+    filtered = data
+    # import ipdb; ipdb.set_trace()
     print('DOWNLOADING {} of {}'.format(len(filtered), save_root))
     pool = parallel.Pool(
-      classes_data, filtered, save_root, num_workers,
+      None, data, save_root, num_workers,
       failed_save_file, compress, verbose, skip,
       log_file=log_file, stats_file=stats_file)
 
