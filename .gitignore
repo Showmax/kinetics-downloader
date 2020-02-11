@@ -6,3 +6,5 @@ work_dir/*
 !work_dir/downloaded.json
 !work_dir/all.json
 venv/
+stats/*
+!stats/.gitkeep
