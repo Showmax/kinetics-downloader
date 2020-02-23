@@ -1,7 +1,6 @@
 import os
 from pathlib import Path
 
-# DATASET_ROOT = "/media/gitumarkk/Extreme SSD/Dancelogue/DATASETS/Kinetics/"
 DATASET_ROOT = "/media/gitumarkk/Seagate Backup Plus Drive//Dancelogue/DATASETS/Kinetics/"
 TRAIN_ROOT = os.path.join(DATASET_ROOT, "train")
 VALID_ROOT = os.path.join(DATASET_ROOT, "val")
@@ -23,4 +22,3 @@ VAL_METADATA_PATH = "resources/700/val/kinetics_700_val.json"
 TEST_METADATA_PATH = "resources/700/test/kinetics_700_test.json"
 
 SUB_CLASS_PATH = "resources/700/categories.json"
-print(Path(__file__).resolve())
