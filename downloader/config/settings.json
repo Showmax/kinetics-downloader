@@ -1,0 +1,43 @@
+{
+	"ucf": {
+		"data": "/Volumes/Extreme SSD/Dancelogue/DATASETS/UCF101/UCF-101"
+	},
+
+	"activity_net": {
+		"json": "/Volumes/Extreme SSD/Dancelogue/DATASETS/Activity Net/activity_net.v1-3.min.json",
+		"data": "/Volumes/Extreme SSD/Dancelogue/DATASETS/Activity Net"
+	},
+
+	"kinetics": {
+		"default": 600,
+		"categories": "/Volumes/Extreme SSD/Dancelogue/DATASETS/Kinetics/categories.json",
+		"classes": "/Volumes/Extreme SSD/Dancelogue/DATASETS/Kinetics/classes.json",
+		"700": {
+			"json": "/Volumes/Extreme SSD/Dancelogue/DATASETS/Kinetics/700",
+			"val_json": "",
+			"train_json": "",
+			"test_json": "",
+			"data": "/Volumes/Extreme SSD/Dancelogue/DATASETS/Kinetics/"
+		},
+		"600": {
+			"json": "/Volumes/Extreme SSD/Dancelogue/DATASETS/Kinetics/600",
+			"val_json": "",
+			"train_json": "",
+			"test_json": "",
+			"data": "/Volumes/Extreme SSD/Dancelogue/DATASETS/Kinetics/"
+		},
+
+		"400": {
+			"json": "/Volumes/Extreme SSD/Dancelogue/DATASETS/Kinetics/400",
+			"val_json": "",
+			"train_json": "",
+			"test_json": "",
+			"data": "/Volumes/Extreme SSD/Dancelogue/DATASETS/Kinetics/"
+		}
+	},
+
+	"lets_dance": {
+		"rgb_data": "/Volumes/Extreme SSD/Dancelogue/DATASETS/Lets Dance/rgb",
+		"meta": "/Volumes/Extreme SSD/Dancelogue/DATASETS/Lets Dance/meta.txt"
+	}
+}

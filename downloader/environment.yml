@@ -1,0 +1,10 @@
+name: dancelogue-dataset-downloader
+dependencies:
+  - python=3.7
+  - pip
+  - jupyter=1.0.0
+  - pandas=0.24.2
+  - bokeh=1.1.0
+    # - phantomjs=2.1.1
+  - selenium=3.141.0
+  - youtube-dl==2019.8.2

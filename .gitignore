@@ -1,3 +1,11 @@
 /dataset
 /.idea
+*.DS_Store*
 __pycache__
+work_dir/*
+!work_dir/missing.json
+!work_dir/downloaded.json
+!work_dir/all.json
+venv/
+stats/*
+!stats/.gitkeep
