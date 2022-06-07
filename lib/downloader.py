@@ -16,8 +16,11 @@ def download_video(video_id, download_path, video_format="mp4", log_file=None):
     stderr = open(log_file, "a")
 
   return_code = subprocess.call(
-    ["youtube-dl", "https://youtube.com/watch?v={}".format(video_id), "--quiet", "-f",
+    ["youtube-dl", "https://youtube.com/watch?v={}".format(video_id), "--no-check-certificate", "--quiet", "-f",
      "bestvideo[ext={}]+bestaudio/best".format(video_format), "--output", download_path, "--no-continue"], stderr=stderr)
+  str = "youtube-dl" + "https://youtube.com/watch?v={}".format(video_id) + "--quiet" + "-f" + "bestvideo[ext={}]+bestaudio/best".format(video_format) + "--output" + download_path + "--no-continue"
+  print("[Command] ", str)
+
   success = return_code == 0
 
   if log_file is not None:
@@ -62,7 +65,7 @@ def process_video(video_id, directory, start, end, video_format="mp4", compress=
   :param log_file:        Path to a log file for youtube-dl.
   :return:                Bool indicating success.
   """
-
+  
   download_path = "{}_raw.{}".format(os.path.join(directory, video_id), video_format)
   mkv_download_path = "{}_raw.mkv".format(os.path.join(directory, video_id))
   slice_path = "{}.{}".format(os.path.join(directory, video_id), video_format)
