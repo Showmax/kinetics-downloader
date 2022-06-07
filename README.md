@@ -12,6 +12,9 @@ and pack all sound tracks into a single **tfrecords** file for faster reading.
 * gzip
 
 Required Python packages are listed in **requirements.txt**.
+```
+pip install --upgrade -r requirments.txt
+```
 
 ## Usage
 
